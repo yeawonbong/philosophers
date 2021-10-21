@@ -1,26 +1,30 @@
 # include "philo.h"
 
-int fun(int *restrict a, int *restrict b)
+void *thread_func(void *ptr)
 {
-	printf("a = %d, b = %d\n", *a, *b);
-	return(0);
+	int count = 0;
+
+	for(int i=0; i < 10000; i++)
+		count++;
+	printf("%s\n", ptr);
+	return (0);
 }
 
-int main ()
+
+int main (void)
 {
-	// char c = 'a';
-	// char *restrict ptr1 = &c;
-	// char *ptr2 = &c;
+	char *msg1="Thread1";
+	char *msg2="Thread2";
 
-	// (*ptr2)++;
-	// printf("string is : %c\n", *ptr2);
-	// printf("adrress.. \nptr1: %p\nptr2: %p\n", ptr1, ptr2);
+	pthread_t thread1;
+	pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+	
+	pthread_mutex_lock(&mutex);
 
-	int ia=1, ib=2;
-	int *a=&ia;
-	int *b=&ib;
-
-// printf("a=%d\n", *a);
-	fun(a,b);
+	pthread_create(&thread1, NULL, thread_func, msg1);
+	pthread_join(thread1, NULL);
+	printf("this is main.\n");
+	printf("fin_main\n");
+	while(1){}
 	return(0);
 }
