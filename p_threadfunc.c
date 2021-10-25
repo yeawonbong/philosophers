@@ -1,27 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo.c                                            :+:      :+:    :+:   */
+/*   p_threadfunc.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ybong <ybong@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/10/25 16:43:09 by ybong             #+#    #+#             */
-/*   Updated: 2021/10/25 16:43:09 by ybong            ###   ########.fr       */
+/*   Created: 2021/10/25 19:33:15 by ybong             #+#    #+#             */
+/*   Updated: 2021/10/25 19:33:15 by ybong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	*get_fork()
+void	*eating(t_philo *philo)
+{
+	pthread_mutex_lock(&philo->forks[philo->idx]);
+	pthread_mutex_lock(&philo->forks[philo->idx + 1]);
+	
+}
+
+void	*sleeping(t_philo *philo)
 {
 
 }
 
-int	main(int argc, char *argv[])
+void	*sleeping(t_philo *philo)
 {
-	t_philo	philo;
 
-	init(argc, argv, &philo);
-	
-	return(0);
 }

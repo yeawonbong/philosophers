@@ -6,6 +6,9 @@
 # include <pthread.h>
 # include <stdlib.h>
 
+# define ODD 1
+# define EVEN 0
+
 typedef struct s_p
 {
 	struct	timeval starttime;
@@ -17,7 +20,12 @@ typedef struct s_p
 
 typedef struct s_philo
 {
+	int				idx;
 	int				pnum;
+	int				ttdie;
+	int				tteat;
+	int				ttsleep; // in microsec
+	int				eatnum;
 	t_p				*parr;
 	pthread_mutex_t	*forks;
 }	t_philo;

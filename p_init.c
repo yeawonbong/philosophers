@@ -12,7 +12,8 @@
 
 #include "philo.h"
 
-void	mutexinit(t_philo *philo)
+
+void	init_forks(t_philo *philo)
 {
 	int	i;
 
@@ -20,13 +21,46 @@ void	mutexinit(t_philo *philo)
 	i = 0;
 	while (i < philo->pnum)
 	{
-		pthread_mutex_init(&philo->forks[i], NULL);
+		if (0 <pthread_mutex_init(&philo->forks[i], NULL))
+			exit(-1);
+	}
+}
+
+void	init_philo(int argc, char *argv[], t_philo *philo)
+{
+	philo->idx = 0;
+	philo->pnum = atoi(argv[1]);
+	philo->ttdie = atoi(argv[2]) * 1000;
+	philo->tteat = atoi(argv[3]) * 1000;
+	philo->ttsleep = atoi(argv[4]) * 1000;
+	if (5 < argc)
+		philo->eatnum = atoi(argv[5]);
+	philo->parr = malloc(sizeof(t_p) * philo->pnum);
+	init_forks(philo);
+}
+
+
+void init_pthread(t_philo *philo, int n)
+{//odd 1 even 0 
+	int	i;
+
+	i = 0;
+	while (i < philo->pnum)
+	{
+		if (i % 2 == n)
+		{
+			if (pthread_create(pthread_t threada, NULL, function) < 0)
+				return;//
+		}
 	}
 }
 
 void	init(int argc, char *argv[], t_philo *philo)
 {
-	philo->pnum = atoi(argv[1]);
-	philo->parr = malloc(sizeof(t_p) * philo->pnum);
-	
+	if (!(argc == 5 || argc == 6))
+	{
+		printf("Err: invalid argument\n");
+		exit(-1);
+	}
+	init_philo(argc, argv, philo);
 }
