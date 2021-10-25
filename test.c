@@ -28,5 +28,13 @@ int main (void)
 	pthread_join(thread2, (void*)&status);
 	printf("this is main.\n");
 	printf("fin_main\n");
+	struct timeval starttime, endtime;
+	double timegap;
+
+	gettimeofday(&starttime, NULL);
+	sleep(1);
+	gettimeofday(&endtime, NULL);
+	timegap = (endtime.tv_sec - starttime.tv_sec) + ((endtime.tv_usec - starttime.tv_usec) / 1000000);
+	printf("time: %f\n", timegap);
 	return(0);
 }
