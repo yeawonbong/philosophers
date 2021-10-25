@@ -12,3 +12,7 @@
 
 #include "philo.h"
 
+void	get_starttime()
+{
+	gettimeofday()
+}

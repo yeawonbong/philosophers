@@ -28,6 +28,8 @@ int main (void)
 	pthread_join(thread2, (void*)&status);
 	printf("this is main.\n");
 	printf("fin_main\n");
+
+	
 	struct timeval starttime, endtime;
 	double timegap;
 

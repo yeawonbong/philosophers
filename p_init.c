@@ -23,6 +23,7 @@ void	init_forks(t_philo *philo)
 	{
 		if (0 <pthread_mutex_init(&philo->forks[i], NULL))
 			exit(-1);
+		i++;
 	}
 }
 
@@ -40,18 +41,16 @@ void	init_philo(int argc, char *argv[], t_philo *philo)
 }
 
 
-void init_pthread(t_philo *philo, int n)
-{//odd 1 even 0 
+void init_pthread(t_philo *philo)
+{
 	int	i;
 
 	i = 0;
 	while (i < philo->pnum)
 	{
-		if (i % 2 == n)
-		{
-			if (pthread_create(pthread_t threada, NULL, function) < 0)
-				return;//
-		}
+		if (pthread_create(&philo->parr[i], NULL, thread_func, philo) < 0)
+			exit (-1);
+		i++;
 	}
 }
 
@@ -62,5 +61,7 @@ void	init(int argc, char *argv[], t_philo *philo)
 		printf("Err: invalid argument\n");
 		exit(-1);
 	}
+	gettimeofday(&philo->starttime, NULL);
 	init_philo(argc, argv, philo);
+	init_pthread(philo);
 }
