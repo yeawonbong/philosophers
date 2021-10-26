@@ -12,7 +12,10 @@
 
 #include "philo.h"
 
-void	get_starttime()
+long long	get_timegap(struct timeval start)
 {
-	gettimeofday()
+	struct timeval	end;
+	
+	gettimeofday(&endt, NULL);
+	return ((end.tv_sec - start.tv_sec) * 1000 + (end.tv_usec - start.tv_usec) / 1000));
 }
