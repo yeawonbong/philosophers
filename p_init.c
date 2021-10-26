@@ -12,8 +12,20 @@
 
 #include "philo.h"
 
+void	init_philo(int argc, char *argv[], t_philo *philo)
+{
+	philo->idx = 0;
+	philo->pnum = (ft_atoi(argv[1]));
+	philo->ttdie = ft_atoi(argv[2]) * 1000;
+	philo->tteat = ft_atoi(argv[3]) * 1000;
+	philo->ttsleep = ft_atoi(argv[4]) * 1000;
+	if (5 < argc)
+		philo->eatnum = ft_atoi(argv[5]);
+	philo->parr = malloc(sizeof(t_p) * philo->pnum);
+	philo->death = 0;
+}
 
-void	init_forks(t_philo *philo)
+void	init_mutex(t_philo *philo)
 {
 	int	i;
 
@@ -21,36 +33,25 @@ void	init_forks(t_philo *philo)
 	i = 0;
 	while (i < philo->pnum)
 	{
-		if (0 <pthread_mutex_init(&philo->forks[i], NULL))
+		if (0 < pthread_mutex_init(&philo->forks[i], NULL))
 			exit(-1);
 		i++;
 	}
+	pthread_mutex_init(&philo->idx_lock, NULL);
+	pthread_mutex_init(&philo->term, NULL);
+	pthread_mutex_lock(&philo->term);
 }
 
-void	init_philo(int argc, char *argv[], t_philo *philo)
+void	init_pthread(t_philo *philo)
 {
-	philo->idx = 0;
-	philo->pnum = atoi(argv[1]);
-	philo->ttdie = atoi(argv[2]) * 1000;
-	philo->tteat = atoi(argv[3]) * 1000;
-	philo->ttsleep = atoi(argv[4]) * 1000;
-	if (5 < argc)
-		philo->eatnum = atoi(argv[5]);
-	philo->parr = malloc(sizeof(t_p) * philo->pnum);
-	init_forks(philo);
-}
-
-
-void init_pthread(t_philo *philo)
-{
-	int	i;
-
-	i = 0;
-	while (i < philo->pnum)
+	while (philo->idx < philo->pnum)
 	{
-		if (pthread_create(&philo->parr[i], NULL, thread_func, philo) < 0)
+		pthread_mutex_lock(&philo->idx_lock);
+		if ((pthread_create(&philo->parr[philo->idx].t, NULL, (void*)thread_func, philo) < 0)\
+		 || (pthread_create(&philo->parr[philo->idx].m, NULL, (void*)monitor, philo) < 0))
 			exit (-1);
-		i++;
+		usleep(10);
+		philo->idx++;//ㅇㅕ기 확인
 	}
 }
 
@@ -61,7 +62,9 @@ void	init(int argc, char *argv[], t_philo *philo)
 		printf("Err: invalid argument\n");
 		exit(-1);
 	}
-	gettimeofday(&philo->starttime, NULL);
+	gettimeofday(&philo->start, NULL);
+	
 	init_philo(argc, argv, philo);
+	init_mutex(philo);
 	init_pthread(philo);
 }

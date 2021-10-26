@@ -16,6 +16,16 @@ long long	get_timegap(struct timeval start)
 {
 	struct timeval	end;
 	
-	gettimeofday(&endt, NULL);
-	return ((end.tv_sec - start.tv_sec) * 1000 + (end.tv_usec - start.tv_usec) / 1000));
+	gettimeofday(&end, NULL);
+	return ((end.tv_sec - start.tv_sec) * 1000 + (end.tv_usec - start.tv_usec) / 1000);
 }
+
+// int	main()
+// {
+// 	struct timeval start;
+// 	pthread_t t1, t2;
+
+// 	gettimeofday(&start, NULL);
+
+// 	return (printf("timegap : %lld\n", get_timegap(start)));
+// }
