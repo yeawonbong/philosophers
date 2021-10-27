@@ -7,8 +7,9 @@
 # include <stdlib.h>
 # include <unistd.h>
 
-# define ODD 1
-# define EVEN 0
+# define EAT "E"
+# define SLEEP "S"
+# define THINK "T"
 
 typedef struct s_p
 {
@@ -21,49 +22,56 @@ typedef struct s_p
 
 typedef struct s_philo
 {
+	pthread_t		main_t;
 	struct timeval	start;
-	pthread_mutex_t	idx_lock;
 	pthread_mutex_t	*forks;
-	pthread_mutex_t	term;
 	t_p				*parr;
+	pthread_mutex_t	idx_lock;
 	int				idx;
 	int				pnum;
-	int				ttdie;
-	int				tteat;
-	int				ttsleep; // in microsec
+	pthread_mutex_t	pnum_lock;	
+	long long		ttdie;
+	long long		tteat;
+	long long		ttsleep; // in microsec
 	int				eatnum;
 	int				death;
+	int				ate_all;
+	pthread_mutex_t	terminator;
 }	t_philo;
 
 /*
 **	p_init.c
 */
-void	init_forks(t_philo *philo);
-void	init_philo(int argc, char *argv[], t_philo *philo);
-void	init_pthread(t_philo *philo);
-void	init(int argc, char *argv[], t_philo *philo);
+int		isargs_digit(int argc, char *argv[]);
+int		init_philo(int argc, char *argv[], t_philo *philo);
+int		init_mutex(t_philo *philo);
+int		init_pthread(t_philo *philo);
+int		*init_monitor(t_philo *philo);///return type re
+int		init(int argc, char *argv[], t_philo *philo);
 
 
 /*
 ** p_threadfunc.c
 */
-void	*eating(t_philo *philo, int id);
-void	*sleeping(t_philo *philo, int id);
-void	*thinking(t_philo *philo, int id);
+int		eating(t_philo *philo, int id);
+int		sleeping(t_philo *philo, int id);
+int		thinking(t_philo *philo, int id);
 void	*thread_func(t_philo *philo);
 
 /*
 **	p_time.c
 */
 long long	get_timegap(struct timeval start);
+void		*monitor(t_philo *philo);
+char		*terminator(t_philo *philo);
 
 /*
 ** p_utils.c
 */
-int			ft_atoi(const char *str);
+int		ft_atoi(const char *str);
+int		ft_isdigit(int c);
 
 
-void	*monitor(t_philo *philo);
 
 
 

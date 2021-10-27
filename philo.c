@@ -12,24 +12,6 @@
 
 #include "philo.h"
 
-void	*monitor(t_philo *philo)
-{
-	int	id;
-
-	id = philo->idx;
-	pthread_mutex_unlock(&philo->idx_lock);
-	while (1)
-	{
-		if (get_timegap(philo->parr[id].fin_eat) > philo->ttdie)
-		{
-			printf("%lldms Philosopher %2d died\n", get_timegap(philo->start), id);
-			// pthread_mutex_unlock(&philo->term);
-			exit (0);
-		}
-	}
-	return (philo);
-}
-
 // void	*terminator(t_philo *philo)
 // {
 // 	pthread_mutex_destroy(&philo->term);

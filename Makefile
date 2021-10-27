@@ -1,8 +1,5 @@
-NAME = philo.a
-OUT = philo
-
-BONUS_NAME = philo_bonus.a
-BONUS_OUT = philo_bonus
+NAME = philo
+BONUS_NAME = philo_bonus
 
 SRCS =./philo.c\
 ./p_init.c\
@@ -12,22 +9,22 @@ SRCS =./philo.c\
 
 OBJS = $(SRCS:.c=.o)
 
-# RM = rm -f
-CC = gcc -pthread
-CFLAGS = -Wall -Wextra -Werror
-AR = ar rcs
+CC = gcc
+CFLAGS = #-Wall -Wextra -Werror
 
 all : $(NAME)
 
 $(NAME) : $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -o $@
-	$(AR) $@ $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $<
+obj : $(OBJS)
 
+$(OBJS) : $(SRCS)
+	$(CC) -pthread $(CFLAGS) -c $<
 
 fclean : clean
-	$(RM) $(NAME)
+	rm -f $(NAME)
 
 clean :
-	$(RM) $(OBJS)
+	rm -f $(OBJS)
 
-re : fclean allå
+re : fclean all

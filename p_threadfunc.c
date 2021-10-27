@@ -12,12 +12,15 @@
 
 #include "philo.h"
 
-void	*eating(t_philo *philo, int id)
+int		eating(t_philo *philo, int id)
 {
+	if (philo->death)
+		return (1);
 	pthread_mutex_lock(&philo->forks[id]);
 	printf("%5lldms Philosopher %2d has taken a fork on the right\n", get_timegap(philo->start), id);
 	pthread_mutex_lock(&philo->forks[id + 1]);
 	printf("%5lldms Philosopher %2d has taken a fork on the left\n", get_timegap(philo->start), id);
+	philo->parr[id].status = EAT;
 	printf("%5lldms Philosopher %2d is eating\n", get_timegap(philo->start), id);
 	usleep(philo->tteat);
 	pthread_mutex_unlock(&philo->forks[id]);
@@ -26,15 +29,21 @@ void	*eating(t_philo *philo, int id)
 	return (philo);
 }
 
-void	*sleeping(t_philo *philo, int id)
+int		sleeping(t_philo *philo, int id)
 {
+	if (philo->death)
+		return (1);
+	philo->parr[id].status = SLEEP;
 	printf("%5lldms Philosopher %2d is sleeping\n", get_timegap(philo->start), id);
 	usleep(philo->ttsleep);
 	return (philo);
 }
 
-void	*thinking(t_philo *philo, int id)
+int		thinking(t_philo *philo, int id)
 {
+	if (philo->death)
+		return (1);
+	philo->parr[id].status = THINK;
 	printf("%5lldms Philosopher %2d is thinking\n", get_timegap(philo->start), id);
 	return (philo);
 }
@@ -43,7 +52,7 @@ void	*thread_func(t_philo *philo)
 {
 	int	id;
 	if (philo->death)
-		return(philo);
+		return(NULL);
 	id = philo->idx;
 	gettimeofday(&philo->parr[id].fin_eat, NULL);
 	printf("created_thread: philo %d\n", philo->idx);
@@ -51,9 +60,11 @@ void	*thread_func(t_philo *philo)
 		usleep(100); // 처음에만 eating 늦게 시작
 	while (1)
 	{
+		if (philo->death)
+			return (NULL);
 		eating(philo, id);
 		sleeping(philo, id);
 		thinking(philo, id);
 	}
-	return (philo);
+	return (NULL);
 }
