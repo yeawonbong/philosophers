@@ -42,7 +42,8 @@ int		main(int argc, char *argv[])
 	int		status;
 
 	status = 0;
-	init(argc, argv, &philo);
+	if (init(argc, argv, &philo))
+		return (0);
 	// pthread_mutex_destroy(&philo.term);
 	return(0);
 }

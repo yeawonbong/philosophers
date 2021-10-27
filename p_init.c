@@ -48,23 +48,44 @@ void	init_pthread(t_philo *philo)
 	{
 		pthread_mutex_lock(&philo->idx_lock);
 		if ((pthread_create(&philo->parr[philo->idx].t, NULL, (void*)thread_func, philo) < 0)\
-		 || (pthread_create(&philo->parr[philo->idx].m, NULL, (void*)monitor, philo) < 0))
+		 || (pthread_create(&philo->parr[philo->idx].m, NULL, (void*)init_monitor, philo) < 0))
 			exit (-1);
 		usleep(10);
 		philo->idx++;//ㅇㅕ기 확인
 	}
 }
 
-void	init(int argc, char *argv[], t_philo *philo)
+int	*init_monitor(t_philo *philo)
+{
+	int	id;
+
+	id = philo->idx;
+	pthread_mutex_unlock(&philo->idx_lock);
+	while (1)
+	{
+		if (get_timegap(philo->parr[id].fin_eat) > philo->ttdie)
+		{
+			printf("%lldms Philosopher %2d died\n", get_timegap(philo->start), id);
+			// pthread_mutex_unlock(&philo->term);
+			return (1);
+		}
+	}
+	return (0);
+}
+
+int		init(int argc, char *argv[], t_philo *philo)
 {
 	if (!(argc == 5 || argc == 6))
 	{
 		printf("Err: invalid argument\n");
-		exit(-1);
+		return (1);
 	}
 	gettimeofday(&philo->start, NULL);
-	
-	init_philo(argc, argv, philo);
-	init_mutex(philo);
-	init_pthread(philo);
+	if (init_philo(argc, argv, philo))
+		return (1);
+	if (init_mutex(philo))
+		return (1);
+	if (init_pthread(philo))
+		return (1);
+	return (0);
 }

@@ -15,10 +15,10 @@
 void	*eating(t_philo *philo, int id)
 {
 	pthread_mutex_lock(&philo->forks[id]);
-	printf("%lldms Philosopher %2d has taken a fork on the right\n", get_timegap(philo->start), id);
+	printf("%5lldms Philosopher %2d has taken a fork on the right\n", get_timegap(philo->start), id);
 	pthread_mutex_lock(&philo->forks[id + 1]);
-	printf("%lldms Philosopher %2d has taken a fork on the left\n", get_timegap(philo->start), id);
-	printf("%lldms Philosopher %2d is eating\n", get_timegap(philo->start), id);
+	printf("%5lldms Philosopher %2d has taken a fork on the left\n", get_timegap(philo->start), id);
+	printf("%5lldms Philosopher %2d is eating\n", get_timegap(philo->start), id);
 	usleep(philo->tteat);
 	pthread_mutex_unlock(&philo->forks[id]);
 	pthread_mutex_unlock(&philo->forks[id + 1]);
@@ -28,14 +28,14 @@ void	*eating(t_philo *philo, int id)
 
 void	*sleeping(t_philo *philo, int id)
 {
-	printf("%lldms Philosopher %2d is sleeping\n", get_timegap(philo->start), id);
+	printf("%5lldms Philosopher %2d is sleeping\n", get_timegap(philo->start), id);
 	usleep(philo->ttsleep);
 	return (philo);
 }
 
 void	*thinking(t_philo *philo, int id)
 {
-	printf("%lldms Philosopher %2d is thinking\n", get_timegap(philo->start), id);
+	printf("%5lldms Philosopher %2d is thinking\n", get_timegap(philo->start), id);
 	return (philo);
 }
 
