@@ -111,6 +111,7 @@ int		init(int argc, char *argv[], t_philo *philo)
 		{
 			pthread_mutex_unlock(&philo->terminator);
 		}
+	}
 	//mutex free
 	return (0);
 }
