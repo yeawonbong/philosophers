@@ -16,7 +16,7 @@ typedef struct s_p
 	pthread_t		t;
 	pthread_t		m;
 	char			status;
-	struct	timeval	fin_eat;
+	struct timeval	fin_eat;
 
 }	t_p;
 
