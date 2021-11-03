@@ -7,9 +7,9 @@
 # include <stdlib.h>
 # include <unistd.h>
 
-# define EAT "E"
-# define SLEEP "S"
-# define THINK "T"
+# define EAT 'E'
+# define SLEEP 'S'
+# define THINK 'T'
 
 typedef struct s_p
 {
@@ -29,14 +29,15 @@ typedef struct s_philo
 	pthread_mutex_t	idx_lock;
 	int				idx;
 	int				pnum;
-	pthread_mutex_t	pnum_lock;	
+	int				mnum;
+	pthread_mutex_t	mnum_lock;	
 	long long		ttdie;
 	long long		tteat;
 	long long		ttsleep; // in microsec
 	int				eatnum;
 	int				death;
 	int				ate_all;
-	pthread_mutex_t	terminator;
+	pthread_mutex_t	term;
 }	t_philo;
 
 /*
@@ -63,7 +64,7 @@ void	*thread_func(t_philo *philo);
 */
 long long	get_timegap(struct timeval start);
 void		*monitor(t_philo *philo);
-char		*terminator(t_philo *philo);
+void		*terminator(t_philo *philo);
 
 /*
 ** p_utils.c
