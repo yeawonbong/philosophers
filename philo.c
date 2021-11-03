@@ -16,9 +16,9 @@ void	*terminator(t_philo *philo)
 {
 	printf("=======terminator ON!\n");
 	pthread_mutex_lock(&philo->term);
+	usleep(300);
 	printf("=======terminating!\n");
 	pthread_mutex_unlock(&philo->term);
-	sleep(1);
 	return (0);
 }
 
@@ -29,13 +29,12 @@ int		main(int argc, char *argv[])
 	int			status;
 
 	status = 0;
-	printf("잠간만!!!!!!!!! argv[1] = %s\n", argv[1]);
-	printf("잠간만!!!!!!!!! argv[1] = %d\n", ft_atoi(argv[1]));
 	if (init(argc, argv, &philo))
 		return (0);
 	pthread_create(&t_term, NULL, (void*)terminator, &philo);
 	pthread_join(t_term, NULL);
 	usleep(100);
+
 	// while(1){};
 	return(0);
 }

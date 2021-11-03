@@ -22,7 +22,7 @@ int		eating(t_philo *philo, int id)
 	printf("%5lldms Philosopher%2d has taken a fork on the left\n", get_timegap(philo->start), id);
 	philo->parr[id].status = EAT;
 	printf("%5lldms Philosopher%2d is eating\n", get_timegap(philo->start), id);
-	usleep(philo->tteat);
+	usleep(philo->tteat * 1000);
 	pthread_mutex_unlock(&philo->forks[id]);
 	pthread_mutex_unlock(&philo->forks[id + 1]);
 	gettimeofday(&philo->parr[id].fin_eat, NULL); // 마지막으로 먹은 시점 p에 기록
@@ -35,7 +35,7 @@ int		sleeping(t_philo *philo, int id)
 		return (1);
 	philo->parr[id].status = SLEEP;
 	printf("%5lldms Philosopher%2d is sleeping\n", get_timegap(philo->start), id);
-	usleep(philo->ttsleep);
+	usleep(philo->ttsleep * 1000);
 	return (0);
 }
 
@@ -59,7 +59,7 @@ printf("====쓰레드 %d 만들었다 함수 시작!!\n", id);
 	gettimeofday(&philo->parr[id].fin_eat, NULL);
 	printf("created_thread: philo %d\n", philo->idx);
 	if (id % 2 == 1)
-		usleep(100); // 처음에만 eating 늦게 시작
+		usleep(500); // 처음에만 eating 늦게 시작
 printf("MID_thread_func!!\n");
 	while (1)
 	{
@@ -72,6 +72,6 @@ printf("MID_thread_func!!\n");
 		if (thinking(philo, id))
 			break;
 	}
-	printf("죽는다죽어 id: %d\n", id);
+	printf("\n죽는다죽어 id: %d,,,\n\n", id);
 	return (0);
 }

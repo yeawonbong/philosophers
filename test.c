@@ -54,5 +54,8 @@ int main (void)
 	gettimeofday(&endtime, NULL);
 	timegap = (endtime.tv_sec - starttime.tv_sec) + ((endtime.tv_usec - starttime.tv_usec) / 1000000);
 	printf("time: %f\n", timegap);
+	printf("myfunc: %lld\n", get_timegap(start));
+	sleep(1);
+	printf("myfunc: %lld\n", get_timegap(start));
 	return(0);
 }

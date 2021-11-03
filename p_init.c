@@ -40,13 +40,14 @@ int	init_philo(int argc, char *argv[], t_philo *philo)
 	
 	if (isargs_digit(argc, argv) \
 	|| ((philo->pnum = ft_atoi(argv[1])) < 1) \
-	|| ((philo->ttdie = ft_atoi(argv[2]) * 1000) < 0) \
-	|| ((philo->tteat = ft_atoi(argv[3]) * 1000) < 0) \
-	|| ((philo->ttsleep = ft_atoi(argv[4]) * 1000) < 0))
+	|| ((philo->ttdie = ft_atoi(argv[2])) < 0) \
+	|| ((philo->tteat = ft_atoi(argv[3])) < 0) \
+	|| ((philo->ttsleep = ft_atoi(argv[4])) < 0))
 	{
 		printf("Err: invalid arguments\n");		
 		return (1);
 	}
+	printf("- pnum: %d\n- ttdie: %lld\n- tteat: %lld\n- ttsleep: %lld\n", philo->pnum, philo->ttdie, philo->tteat, philo->ttsleep);
 	if (!(philo->parr = malloc(sizeof(t_p) * philo->pnum)))
 		return (1);
 	if (argc == 6)
@@ -90,7 +91,7 @@ int	init_pthread(t_philo *philo)
 		if ((pthread_create(&philo->parr[philo->idx].t, NULL, (void*)thread_func, philo) < 0)\
 		 || (pthread_create(&philo->parr[philo->idx].m, NULL, (void*)monitor, philo) < 0))
 			return (1);
-		usleep(10);
+		usleep(100);
 		philo->idx++;//ㅇㅕ기 확인
 	}
 	printf("EO init pthreads!\n");
