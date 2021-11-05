@@ -48,7 +48,7 @@ int		main(int argc, char *argv[])
 	// {
 	// 	pthread_join(philo.parr[i].m, NULL);
 	// 	i++;
-	// }
+	// } join이 이상하다. thread 종료 기다려지지가 않는다. 
 	printf("=======terminator OFF!\n");
 	pthread_mutex_unlock(&philo.term);
 	// while(1){};
