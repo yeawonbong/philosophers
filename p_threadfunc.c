@@ -14,11 +14,17 @@
 
 int		eating(t_philo *philo, int id)
 {
-	if (philo->death)
-		return (1);
 	pthread_mutex_lock(&philo->forks[id]);
+	pthread_mutex_lock(&philo->death_lock);
+	if (philo->death == 1)
+		return (1);
+	pthread_mutex_unlock(&philo->death_lock);
 	printf("%5lldms Philosopher%2d has taken a fork on the right\n", get_timegap(philo->start), id);
 	pthread_mutex_lock(&philo->forks[id + 1]);
+	pthread_mutex_lock(&philo->death_lock);
+	if (philo->death == 1)
+		return (1);
+	pthread_mutex_unlock(&philo->death_lock);
 	printf("%5lldms Philosopher%2d has taken a fork on the left\n", get_timegap(philo->start), id);
 	philo->parr[id].status = EAT;
 	printf("%5lldms Philosopher%2d is eating\n", get_timegap(philo->start), id);
@@ -31,8 +37,10 @@ int		eating(t_philo *philo, int id)
 
 int		sleeping(t_philo *philo, int id)
 {
-	if (philo->death)
+	pthread_mutex_lock(&philo->death_lock);
+	if (philo->death == 1)
 		return (1);
+	pthread_mutex_unlock(&philo->death_lock);
 	philo->parr[id].status = SLEEP;
 	printf("%5lldms Philosopher%2d is sleeping\n", get_timegap(philo->start), id);
 	usleep(philo->ttsleep * 1000);
@@ -41,8 +49,10 @@ int		sleeping(t_philo *philo, int id)
 
 int		thinking(t_philo *philo, int id)
 {
-	if (philo->death)
+	pthread_mutex_lock(&philo->death_lock);
+	if (philo->death == 1)
 		return (1);
+	pthread_mutex_unlock(&philo->death_lock);
 	philo->parr[id].status = THINK;
 	printf("%5lldms Philosopher%2d is thinking\n", get_timegap(philo->start), id);
 	return (0);
@@ -51,20 +61,20 @@ int		thinking(t_philo *philo, int id)
 void	*thread_func(t_philo *philo)
 {
 	int	id;
-	if (philo->death)
+
+	gettimeofday(&philo->parr[id].fin_eat, NULL);
+	if (id % 2 == 1)
+		usleep(500); // 처음에만 eating 늦게 시작
+	pthread_mutex_lock(&philo->death_lock);
+	if (philo->death == 1)
 		return(0);
+	pthread_mutex_unlock(&philo->death_lock);
 	id = philo->idx;
 printf("====쓰레드 %d 만들었다 함수 시작!!\n", id);
 	pthread_mutex_unlock(&philo->idx_lock);
-	gettimeofday(&philo->parr[id].fin_eat, NULL);
 	printf("created_thread: philo %d\n", philo->idx);
-	if (id % 2 == 1)
-		usleep(500); // 처음에만 eating 늦게 시작
-printf("MID_thread_func!!\n");
-	while (1)
+	while (philo->death == 0)
 	{
-		if (philo->death)
-			break;
 		if (eating(philo, id))
 			break;
 		if (sleeping(philo, id))

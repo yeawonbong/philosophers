@@ -91,7 +91,7 @@ int	init_pthread(t_philo *philo)
 		if ((pthread_create(&philo->parr[philo->idx].t, NULL, (void*)thread_func, philo) < 0)\
 		 || (pthread_create(&philo->parr[philo->idx].m, NULL, (void*)monitor, philo) < 0))
 			return (1);
-		usleep(100);
+		usleep(1000);
 		philo->idx++;//ㅇㅕ기 확인
 	}
 	printf("EO init pthreads!\n");

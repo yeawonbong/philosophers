@@ -30,7 +30,7 @@ typedef struct s_philo
 	int				idx;
 	int				pnum;
 	int				mnum;
-	pthread_mutex_t	mnum_lock;	
+	pthread_mutex_t	death_lock;	
 	long long		ttdie;
 	long long		tteat;
 	long long		ttsleep; // in microsec
