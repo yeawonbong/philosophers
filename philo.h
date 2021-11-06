@@ -10,34 +10,44 @@
 # define EAT 'E'
 # define SLEEP 'S'
 # define THINK 'T'
+# define LEFT 'L'
+# define RIGHT 'R'
 
 typedef struct s_p
 {
 	pthread_t		t;
-	pthread_t		m;
+	pthread_t		m; //monitor
 	char			status;
 	struct timeval	fin_eat;
-
 }	t_p;
 
-typedef struct s_philo
+typedef struct s_input
 {
-	pthread_t		main_t;
-	struct timeval	start;
-	pthread_mutex_t	*forks;
-	t_p				*parr;
-	pthread_mutex_t	idx_lock;
-	int				idx;
 	int				pnum;
-	int				mnum;
-	pthread_mutex_t	death_lock;	
 	long long		ttdie;
 	long long		tteat;
 	long long		ttsleep; // in microsec
 	int				eatnum;
+}	t_input;
+
+typedef struct s_philo
+{
+	t_input			in;
+	struct timeval	start;
+	pthread_mutex_t	*forks;
+	t_p				*parr;
+	pthread_mutex_t m_lock;
+	pthread_mutex_t	idx_lock;
+	int				idx;
+	pthread_mutex_t	death_lock;	
 	int				death;
 	int				ate_all;
 	pthread_mutex_t	term;
+	// int				pnum;
+	// long long		ttdie;
+	// long long		tteat;
+	// long long		ttsleep; // in microsec
+	// int				eatnum;
 }	t_philo;
 
 /*
@@ -54,9 +64,9 @@ int		init(int argc, char *argv[], t_philo *philo);
 /*
 ** p_threadfunc.c
 */
-int		eating(t_philo *philo, int id);
-int		sleeping(t_philo *philo, int id);
-int		thinking(t_philo *philo, int id);
+// int		eating(t_philo *philo, int id);
+// int		sleeping(t_philo *philo, int id);
+// int		thinking(t_philo *philo, int id);
 void	*thread_func(t_philo *philo);
 
 /*
@@ -64,7 +74,7 @@ void	*thread_func(t_philo *philo);
 */
 long long	get_timegap(struct timeval start);
 void		*monitor(t_philo *philo);
-void		*terminator(t_philo *philo);
+int			death_detector(t_philo *philo);
 
 /*
 ** p_utils.c

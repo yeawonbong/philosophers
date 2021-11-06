@@ -9,18 +9,43 @@ pthread_mutex_t *forks;
 // 	pthread_detach(philo->parr[i++].t);
 */ 
 
+void	unlock_forks(t_philo *philo)
+{
+	int i;
+
+	i = 0;
+	while (i < philo->in.pnum)
+	{
+		pthread_mutex_unlock(&philo->forks[i]);
+		pthread_mutex_destroy(&philo->forks[i++]);
+	}
+}
+
+int	death_detector(t_philo *philo)
+{
+	pthread_mutex_lock(&philo->death_lock);
+	if (philo->death == 1)
+		return (1);
+	pthread_mutex_unlock(&philo->death_lock);
+	return (0);
+}
+
 int	starve(t_philo *philo, int id)
 {
-	if (get_timegap(philo->parr[id].fin_eat) > philo->ttdie && philo->death == 0)
+	if (get_timegap(philo->parr[id].fin_eat) >= philo->in.ttdie \
+		&& death_detector(philo) == 0 \
+		&& philo->parr[id].status != EAT)
 	{
-		pthread_mutex_lock(&philo->death_lock);
+		// pthread_mutex_lock(&philo->death_lock);
+		if (philo->death == 0)
+			printf("%5lldms Philosopher %2d died\n", get_timegap(philo->start), id + 1);
 		philo->death = 1;
-		pthread_mutex_unlock(&philo->death_lock);
-		printf("%5lldms Philosopher %2d died\n", get_timegap(philo->start), id);
-		usleep(2500);
-		pthread_mutex_unlock(&philo->term);
+		// pthread_mutex_unlock(&philo->death_lock);
+		unlock_forks(philo);
 		return (1);
 	}
+	if (death_detector(philo))
+		return (1);
 	return (0);
 }
 
@@ -29,16 +54,15 @@ void	*monitor(t_philo *philo)///return type re
 	int	id;
 
 	id = philo->idx;
-printf("==모니터 %d 만들었다 함수 시작!!\n", id);
-	pthread_mutex_unlock(&philo->idx_lock);
-	pthread_mutex_lock(&philo->death_lock);
-	while (philo->death == 0)
+	pthread_mutex_lock(&philo->m_lock);
+	pthread_mutex_unlock(&philo->m_lock);
+	while (death_detector(philo) == 0)
 	{
-		pthread_mutex_unlock(&philo->death_lock);
 		if (starve(philo, id))
 			break ;
 	}
-	printf("\n모니터 끝 ( %d ) \n\n", id);
+	usleep(2500);
+	pthread_mutex_unlock(&philo->term);
 	return (0);
 }
 

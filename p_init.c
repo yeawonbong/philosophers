@@ -39,25 +39,23 @@ int	init_philo(int argc, char *argv[], t_philo *philo)
 	philo->idx = 0;
 	
 	if (isargs_digit(argc, argv) \
-	|| ((philo->pnum = ft_atoi(argv[1])) < 1) \
-	|| ((philo->ttdie = ft_atoi(argv[2])) < 0) \
-	|| ((philo->tteat = ft_atoi(argv[3])) < 0) \
-	|| ((philo->ttsleep = ft_atoi(argv[4])) < 0))
+	|| ((philo->in.pnum = ft_atoi(argv[1])) < 1) \
+	|| ((philo->in.ttdie = ft_atoi(argv[2])) < 0) \
+	|| ((philo->in.tteat = ft_atoi(argv[3])) < 0) \
+	|| ((philo->in.ttsleep = ft_atoi(argv[4])) < 0))
 	{
 		printf("Err: invalid arguments\n");		
 		return (1);
 	}
-	printf("- pnum: %d\n- ttdie: %lld\n- tteat: %lld\n- ttsleep: %lld\n", philo->pnum, philo->ttdie, philo->tteat, philo->ttsleep);
-	if (!(philo->parr = malloc(sizeof(t_p) * philo->pnum)))
+	printf("- pnum: %d\n- ttdie: %lld\n- tteat: %lld\n- ttsleep: %lld\n", philo->in.pnum, philo->in.ttdie, philo->in.tteat, philo->in.ttsleep);
+	if (!(philo->parr = malloc(sizeof(t_p) * philo->in.pnum)))
 		return (1);
 	if (argc == 6)
-		philo->eatnum = ft_atoi(argv[5]);
+		philo->in.eatnum = ft_atoi(argv[5]);
 	else
-		philo->eatnum = -1;
+		philo->in.eatnum = -1;
 	philo->death = 0;
 	philo->ate_all = 0;
-	philo->mnum = 0;
-printf("EO init philo! pnum: %d\n", philo->pnum);
 	return (0);
 }
 
@@ -65,10 +63,10 @@ int	init_mutex(t_philo *philo) //fork, idx_lock, terminator
 {
 	int	i;
 
-	if (!(philo->forks = malloc(sizeof(pthread_mutex_t) * philo->pnum)))
+	if (!(philo->forks = malloc(sizeof(pthread_mutex_t) * philo->in.pnum)))
 		return (1);
 	i = 0;
-	while (i < philo->pnum)
+	while (i < philo->in.pnum)
 	{
 		if (0 < pthread_mutex_init(&philo->forks[i], NULL))
 			return (1);
@@ -76,25 +74,25 @@ int	init_mutex(t_philo *philo) //fork, idx_lock, terminator
 	}
 	pthread_mutex_init(&philo->idx_lock, NULL);
 	pthread_mutex_init(&philo->term, NULL);
+	pthread_mutex_init(&philo->m_lock, NULL);
 	pthread_mutex_lock(&philo->term);
-printf("EO init mutex!\n");
+	pthread_mutex_lock(&philo->m_lock);
 	return (0);
 }
 
 int	init_pthread(t_philo *philo)
 {
-	printf("START OF init pthreads!\n");	
-	while (philo->idx < philo->pnum)
+	while (philo->idx < philo->in.pnum)
 	{
-		printf("쓰레드만들기 %d번째, mnum %d\n", philo->idx, philo->mnum);
 		pthread_mutex_lock(&philo->idx_lock);
 		if ((pthread_create(&philo->parr[philo->idx].t, NULL, (void*)thread_func, philo) < 0)\
 		 || (pthread_create(&philo->parr[philo->idx].m, NULL, (void*)monitor, philo) < 0))
 			return (1);
-		usleep(1000);
+		usleep(100);
+		pthread_mutex_unlock(&philo->idx_lock);
 		philo->idx++;//ㅇㅕ기 확인
 	}
-	printf("EO init pthreads!\n");
+	pthread_mutex_unlock(&philo->m_lock);
 	return (0);
 }
 
@@ -110,6 +108,5 @@ printf("init!\n");
 		return (1);
 	if (init_pthread(philo))
 		return (1);
-printf("EO init!\n");
 	return (0);
 }

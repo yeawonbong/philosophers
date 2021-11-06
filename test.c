@@ -6,8 +6,8 @@ struct timeval start;
 
 void *thread_f(void *str)
 {
-	printf("created_thread: %s\n", str);
-	printf("createtime %s : %lld\n", str, get_timegap(start));
+	printf("created_thread: %s\n", (char*)str);
+	printf("createtime %s : %lld\n", (char*)str, get_timegap(start));
 	pthread_mutex_lock(&mutex);
 	printf("============%s start\n", (char*)str);
 	for(int i=0; i < 10000000; i++)
@@ -54,8 +54,8 @@ int main (void)
 	gettimeofday(&endtime, NULL);
 	timegap = (endtime.tv_sec - starttime.tv_sec) + ((endtime.tv_usec - starttime.tv_usec) / 1000000);
 	printf("time: %f\n", timegap);
-	printf("myfunc: %lld\n", get_timegap(start));
+	printf("myfunc: %lld\n", get_timegap(starttime));
 	sleep(1);
-	printf("myfunc: %lld\n", get_timegap(start));
+	printf("myfunc: %lld\n", get_timegap(starttime));
 	return(0);
 }
