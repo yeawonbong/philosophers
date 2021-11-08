@@ -12,7 +12,7 @@
 
 #include "philo.h"
 
-static int	grab_fork(t_philo *philo, int id, char c)
+static int	grab_fork(t_philo *philo, int id, int left, char c)
 {
 	if (c == RIGHT)
 	{
@@ -23,7 +23,7 @@ static int	grab_fork(t_philo *philo, int id, char c)
 	}
 	else if (c == LEFT)
 	{
-		pthread_mutex_lock(&philo->forks[id + 1]);		
+		pthread_mutex_lock(&philo->forks[left]);
 		if (death_detector(philo))
 			return (1);
 		print_status(philo, id, "has taken a fork on the left");
@@ -33,21 +33,29 @@ static int	grab_fork(t_philo *philo, int id, char c)
 
 static int	eating(t_philo *philo, int id)
 {
+	int left;
+
+	if (id == philo->in.pnum - 1)
+		left = 0;
+	else
+		left = id + 1;
 	if (id % 2 == 0)
 	{
-		if (grab_fork(philo, id, RIGHT) || grab_fork(philo, id, LEFT))
+		if (grab_fork(philo, id, left, RIGHT) || grab_fork(philo, id, left, LEFT))
 			return (1);
 	}
 	else if (id % 2 == 1)
 	{
-		if (grab_fork(philo, id, LEFT) || grab_fork(philo, id, RIGHT))
+		if (grab_fork(philo, id, left, LEFT) || grab_fork(philo, id, left, RIGHT))
 			return (1);
 	}
+	gettimeofday(&philo->parr[id].fin_eat, NULL);
+	printf("시간확인 %d 먹은시간 %lld\n", id, get_timegap(philo->start, philo->parr[id].fin_eat));
 	philo->parr[id].status = EAT;
 	print_status(philo, id, "is eating");
-	usleep(philo->in.tteat * 1000);
+	ft_usleep(philo->in.tteat);
 	pthread_mutex_unlock(&philo->forks[id]);
-	pthread_mutex_unlock(&philo->forks[id + 1]);
+	pthread_mutex_unlock(&philo->forks[left]);
 	gettimeofday(&philo->parr[id].fin_eat, NULL); // 마지막으로 먹은 시점 p에 기록
 	return (0);
 }
@@ -58,7 +66,7 @@ static int	sleeping(t_philo *philo, int id)
 		return (1);
 	philo->parr[id].status = SLEEP;
 	print_status(philo, id, "is sleeping");
-	usleep(philo->in.ttsleep * 1000);
+	ft_usleep(philo->in.ttsleep);
 	return (0);
 }
 
@@ -79,6 +87,7 @@ void	*thread_func(t_philo *philo)
 	// printf("쓰레드 생성: %d\n", id);
 	gettimeofday(&philo->parr[id].fin_eat, NULL);
 	id = philo->idx;
+	philo->parr[id].status = 0;
 	while (philo->death == 0)
 	{
 		if (eating(philo, id))

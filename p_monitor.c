@@ -37,12 +37,18 @@ int	death_detector(t_philo *philo)
 
 int	starve(t_philo *philo, int id)
 {
-	if (get_timegap(philo->parr[id].fin_eat) >= philo->in.ttdie \
-		&& death_detector(philo) == 0 \
-		&& philo->parr[id].status != EAT)
+	struct		timeval end;
+
+	gettimeofday(&end, NULL);
+	if (philo->parr[id].status != EAT \
+		&& get_timegap(philo->parr[id].fin_eat, end) >= philo->in.ttdie \
+		&& death_detector(philo) == 0)
 	{
-		print_status(philo, id, "died");
-		pthread_mutex_lock(&philo->death_lock);
+		printf("status_print: %c\n", philo->parr[id].status);
+		pthread_mutex_lock(&philo->print_lock);
+		if (death_detector(philo) == 0)
+			printf("%5lldms Philosopher %2d died\n", get_timegap(philo->start, end), id + 1);
+		pthread_mutex_unlock(&philo->print_lock);
 		philo->death = 1;
 		pthread_mutex_unlock(&philo->death_lock);
 		unlock_forks(philo);

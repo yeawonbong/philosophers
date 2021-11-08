@@ -37,7 +37,6 @@ typedef struct s_philo
 	t_p				*parr;
 	pthread_mutex_t	*forks;
 	pthread_mutex_t m_lock;
-	pthread_mutex_t	idx_lock;
 	int				idx;
 	pthread_mutex_t	death_lock;	
 	int				death;
@@ -68,9 +67,11 @@ void	*thread_func(t_philo *philo);
 /*
 **	p_time.c
 */
-long long	get_timegap(struct timeval start);
+long long	get_timegap(struct timeval start, struct timeval end);
 void		*monitor(t_philo *philo);
 int			death_detector(t_philo *philo);
+void		ft_usleep(int time);
+long long	get_time_ms(struct timeval time);
 
 /*
 ** p_utils.c

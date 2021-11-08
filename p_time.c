@@ -17,11 +17,8 @@ long long	get_time_ms(struct timeval time)
 	return((time.tv_sec * 1000) + (time.tv_usec / 1000));
 }
 
-long long	get_timegap(struct timeval start)
-{
-	struct timeval	end;
-	
-	gettimeofday(&end, NULL);
+long long	get_timegap(struct timeval start, struct timeval end)
+{	
 	return (get_time_ms(end) - get_time_ms(start));
 }
 
