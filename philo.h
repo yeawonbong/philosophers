@@ -14,7 +14,6 @@ typedef struct s_p
 {
 	pthread_t		t;
 	pthread_t		m; //monitor
-	// char			status;
 	pthread_mutex_t	eating;
 	struct timeval	fin_eat;
 }	t_p;

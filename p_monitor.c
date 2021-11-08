@@ -1,28 +1,5 @@
 # include "philo.h"
 
-/* to free
-
-t_p *parr (스레드 포함되어있음)
-pthread_mutex_t *forks;
-
-// while (i < philo->pnum)
-// 	pthread_detach(philo->parr[i++].t);
-*/ 
-
-void	unlock_forks(t_philo *philo)
-{
-	int i;
-
-	i = 0;
-	while (i < philo->in.pnum)
-	{
-		pthread_mutex_unlock(&philo->forks[i]);
-		pthread_mutex_destroy(&philo->forks[i++]);
-		// pthread_mutex_unlock(&philo->parr[i].eating);
-		// pthread_mutex_destroy(&philo->parr[i].eating);
-	}
-}
-
 int	death_detector(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->death_lock);
@@ -68,7 +45,6 @@ void	*monitor(t_philo *philo)///return type re
 		if (starve(philo, id, end))
 			break ;
 	}
-	unlock_forks(philo);
 	usleep(2500);
 	pthread_mutex_unlock(&philo->term);
 	return (0);

@@ -12,9 +12,6 @@
 
 #include "philo.h"
 
-void	free_thread();
-void	free_mutex();
-
 void	print_status(t_philo *philo, int id, char *str)
 {
 	struct timeval	end;
@@ -26,12 +23,27 @@ void	print_status(t_philo *philo, int id, char *str)
 	pthread_mutex_unlock(&philo->print_lock);
 }
 
-static void	terminator(t_philo *philo)
+static void	free_mutex(t_philo *philo)
 {
-	// printf("=======terminator ON!\n");
+	int i;
+
+	i = 0;
+	while (i < philo->in.pnum)
+	{
+		pthread_mutex_unlock(&philo->forks[i]);
+		pthread_mutex_destroy(&philo->forks[i++]);
+	}
+	pthread_mutex_destroy(&philo->m_lock);
+	pthread_mutex_destroy(&philo->death_lock);
+	pthread_mutex_destroy(&philo->print_lock);
+	pthread_mutex_destroy(&philo->term);
+}
+
+static void	free_thread(t_philo *philo)
+{
 	int	i;
 
-	pthread_mutex_lock(&philo->term);
+
 	i = 0;
 	while (i < philo->in.pnum)
 	{
@@ -44,8 +56,7 @@ static void	terminator(t_philo *philo)
 		pthread_join(philo->parr[i].m, NULL);
 		i++;
 	}
-	pthread_mutex_unlock(&philo->term);
-	// printf("=======terminator OFF!\n");
+	
 }
 
 int		main(int argc, char *argv[])
@@ -57,8 +68,10 @@ int		main(int argc, char *argv[])
 	status = 0;
 	if (init(argc, argv, &philo))
 		return (0);
-	terminator(&philo);
-	unlock_forks(&philo);
+	pthread_mutex_lock(&philo.term);
+	pthread_mutex_unlock(&philo.term);
+	free_mutex(&philo);
+	free_thread(&philo);
 
 	return(0);
 }
