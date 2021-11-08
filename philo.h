@@ -82,6 +82,7 @@ int			death_detector(t_philo *philo);
 int		ft_atoi(const char *str);
 int		ft_isdigit(int c);
 
+void	unlock_forks(t_philo *philo);
 
 
 

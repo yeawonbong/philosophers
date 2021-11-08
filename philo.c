@@ -47,5 +47,7 @@ int		main(int argc, char *argv[])
 	if (init(argc, argv, &philo))
 		return (0);
 	terminator(&philo);
+	unlock_forks(&philo);
+
 	return(0);
 }

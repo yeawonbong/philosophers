@@ -24,8 +24,13 @@ void	unlock_forks(t_philo *philo)
 int	death_detector(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->death_lock);
+	if (philo->death)
+		printf("DEATH DETECTION : %d\n", philo->death);
 	if (philo->death == 1)
+	{
+		pthread_mutex_unlock(&philo->death_lock);
 		return (1);
+	}
 	pthread_mutex_unlock(&philo->death_lock);
 	return (0);
 }
@@ -37,15 +42,15 @@ int	starve(t_philo *philo, int id)
 		&& philo->parr[id].status != EAT)
 	{
 		// pthread_mutex_lock(&philo->death_lock);
-		if (philo->death == 0)
+		if (death_detector(philo) == 0)
 			printf("%5lldms Philosopher %2d died\n", get_timegap(philo->start), id + 1);
 		philo->death = 1;
-		// pthread_mutex_unlock(&philo->death_lock);
+		pthread_mutex_unlock(&philo->death_lock);
 		unlock_forks(philo);
 		return (1);
 	}
 	if (death_detector(philo))
-		return (1);
+		return (0);
 	return (0);
 }
 
