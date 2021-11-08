@@ -16,6 +16,7 @@ typedef struct s_p
 	pthread_t		m; //monitor
 	pthread_mutex_t	eating;
 	struct timeval	fin_eat;
+	int				ate;
 }	t_p;
 
 typedef struct s_input
@@ -42,24 +43,13 @@ typedef struct s_philo
 	pthread_mutex_t	term;
 }	t_philo;
 
-/*
-**	p_init.c
-*/
-int		isargs_digit(int argc, char *argv[]);
-int		init_philo(int argc, char *argv[], t_philo *philo);
-int		init_mutex(t_philo *philo);
-int		init_pthread(t_philo *philo);
-int		*init_monitor(t_philo *philo);///return type re
+
 int		init(int argc, char *argv[], t_philo *philo);
-
-
-/*
-** p_threadfunc.c
-*/
-// int		eating(t_philo *philo, int id);
-// int		sleeping(t_philo *philo, int id);
-// int		thinking(t_philo *philo, int id);
 void	*thread_func(t_philo *philo);
+void	*monitor(t_philo *philo);
+
+
+
 
 /*
 **	p_time.c

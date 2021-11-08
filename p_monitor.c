@@ -5,12 +5,25 @@ int	death_detector(t_philo *philo)
 	pthread_mutex_lock(&philo->death_lock);
 	// if (philo->death)
 	// 	printf("DEATH DETECTION : %d\n", philo->death);
-	if (philo->death == 1)
+	if (philo->death == 1 || philo->ate_all > philo->in.eatnum)
 	{
 		pthread_mutex_unlock(&philo->death_lock);
 		return (1);
 	}
 	pthread_mutex_unlock(&philo->death_lock);
+	return (0);
+}
+
+static int full(t_philo *philo, int id)
+{
+	if (philo->parr[id].ate == philo->in.eatnum)
+		philo->ate_all++;
+	if (philo->ate_all == philo->in.eatnum)
+	{
+		philo->ate_all++;
+		printf("Philosophers finished dinning!\n");
+		return (1);
+	}
 	return (0);
 }
 
@@ -44,10 +57,10 @@ void	*monitor(t_philo *philo)///return type re
 		gettimeofday(&end, NULL);
 		if (starve(philo, id, end))
 			break ;
+		if (0 < philo->in.eatnum && full(philo, id))
+			break ;
 	}
 	usleep(2500);
 	pthread_mutex_unlock(&philo->term);
 	return (0);
 }
-
-

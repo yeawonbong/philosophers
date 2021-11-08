@@ -52,9 +52,10 @@ static int	eating(t_philo *philo, int id)
 	pthread_mutex_lock(&philo->parr[id].eating);
 	print_status(philo, id, "is eating");
 	ft_usleep(philo->in.tteat);
+	philo->parr[id].ate++;
 	gettimeofday(&philo->parr[id].fin_eat, NULL); // 마지막으로 먹은 시점 p에 기록
 	pthread_mutex_unlock(&philo->parr[id].eating);
-	printf("시간확인 %d 먹은시간 %lld - \n", id+1, get_timegap(philo->start, philo->parr[id].fin_eat));
+	// printf("시간확인 %d 먹은시간 %lld - \n", id+1, get_timegap(philo->start, philo->parr[id].fin_eat));
 	pthread_mutex_unlock(&philo->forks[id]);
 	pthread_mutex_unlock(&philo->forks[left]);
 	return (0);
@@ -82,7 +83,6 @@ void	*thread_func(t_philo *philo)
 	int	id;
 
 	id = philo->idx;
-	// printf("쓰레드 생성: %d\n", id);
 	gettimeofday(&philo->parr[id].fin_eat, NULL);
 	id = philo->idx;
 	while (philo->death == 0)
@@ -94,6 +94,6 @@ void	*thread_func(t_philo *philo)
 		if (thinking(philo, id))
 			break;
 	}
-	printf("쓰레드 %d 죽음\n", id+1);
+	// printf("쓰레드 %d 죽음\n", id+1);
 	return (0);
 }

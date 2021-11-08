@@ -56,7 +56,7 @@ static void	free_thread(t_philo *philo)
 		pthread_join(philo->parr[i].m, NULL);
 		i++;
 	}
-	
+	free(philo->parr);
 }
 
 int		main(int argc, char *argv[])
@@ -72,6 +72,5 @@ int		main(int argc, char *argv[])
 	pthread_mutex_unlock(&philo.term);
 	free_mutex(&philo);
 	free_thread(&philo);
-
 	return(0);
 }
