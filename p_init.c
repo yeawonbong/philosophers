@@ -75,6 +75,8 @@ int	init_mutex(t_philo *philo) //fork, idx_lock, terminator
 	pthread_mutex_init(&philo->idx_lock, NULL);
 	pthread_mutex_init(&philo->term, NULL);
 	pthread_mutex_init(&philo->m_lock, NULL);
+	pthread_mutex_init(&philo->death_lock, NULL);
+	pthread_mutex_init(&philo->print_lock, NULL);
 	pthread_mutex_lock(&philo->term);
 	pthread_mutex_lock(&philo->m_lock);
 	return (0);
@@ -89,8 +91,8 @@ int	init_pthread(t_philo *philo)
 		 || (pthread_create(&philo->parr[philo->idx].m, NULL, (void*)monitor, philo) < 0))
 			return (1);
 		usleep(100);
-		pthread_mutex_unlock(&philo->idx_lock);
 		philo->idx++;//ㅇㅕ기 확인
+		pthread_mutex_unlock(&philo->idx_lock);
 	}
 	pthread_mutex_unlock(&philo->m_lock);
 	return (0);

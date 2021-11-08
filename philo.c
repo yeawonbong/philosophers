@@ -15,6 +15,14 @@
 void	free_thread();
 void	free_mutex();
 
+void	print_status(t_philo *philo, int id, char *str)
+{
+	pthread_mutex_lock(&philo->print_lock);
+	if (death_detector(philo) == 0)
+		printf("%5lldms Philosopher %2d %s\n", get_timegap(philo->start), id + 1, str);
+	pthread_mutex_unlock(&philo->print_lock);
+}
+
 static void	terminator(t_philo *philo)
 {
 	// printf("=======terminator ON!\n");

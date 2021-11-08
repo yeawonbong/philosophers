@@ -32,22 +32,18 @@ typedef struct s_input
 
 typedef struct s_philo
 {
-	t_input			in;
 	struct timeval	start;
-	pthread_mutex_t	*forks;
+	t_input			in;
 	t_p				*parr;
+	pthread_mutex_t	*forks;
 	pthread_mutex_t m_lock;
 	pthread_mutex_t	idx_lock;
 	int				idx;
 	pthread_mutex_t	death_lock;	
 	int				death;
+	pthread_mutex_t	print_lock;
 	int				ate_all;
 	pthread_mutex_t	term;
-	// int				pnum;
-	// long long		ttdie;
-	// long long		tteat;
-	// long long		ttsleep; // in microsec
-	// int				eatnum;
 }	t_philo;
 
 /*
@@ -84,6 +80,7 @@ int		ft_isdigit(int c);
 
 void	unlock_forks(t_philo *philo);
 
+void	print_status(t_philo *philo, int id, char *str);
 
 
 

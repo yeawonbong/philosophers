@@ -19,14 +19,14 @@ static int	grab_fork(t_philo *philo, int id, char c)
 		pthread_mutex_lock(&philo->forks[id]);
 		if (death_detector(philo))
 			return (1);
-		printf("%5lldms Philosopher %2d has taken a fork on the right\n", get_timegap(philo->start), id + 1);
+		print_status(philo, id, "has taken a fork on the right");
 	}
 	else if (c == LEFT)
 	{
 		pthread_mutex_lock(&philo->forks[id + 1]);		
 		if (death_detector(philo))
 			return (1);
-		printf("%5lldms Philosopher %2d has taken a fork on the left\n", get_timegap(philo->start), id + 1);
+		print_status(philo, id, "has taken a fork on the left");
 	}
 	return (0);
 }
@@ -44,7 +44,7 @@ static int	eating(t_philo *philo, int id)
 			return (1);
 	}
 	philo->parr[id].status = EAT;
-	printf("%5lldms Philosopher %2d is eating\n", get_timegap(philo->start), id + 1);
+	print_status(philo, id, "is eating");
 	usleep(philo->in.tteat * 1000);
 	pthread_mutex_unlock(&philo->forks[id]);
 	pthread_mutex_unlock(&philo->forks[id + 1]);
@@ -57,7 +57,7 @@ static int	sleeping(t_philo *philo, int id)
 	if (death_detector(philo))
 		return (1);
 	philo->parr[id].status = SLEEP;
-	printf("%5lldms Philosopher %2d is sleeping\n", get_timegap(philo->start), id + 1);
+	print_status(philo, id, "is sleeping");
 	usleep(philo->in.ttsleep * 1000);
 	return (0);
 }
@@ -67,7 +67,7 @@ static int	thinking(t_philo *philo, int id)
 	if (death_detector(philo))
 		return (1);
 	philo->parr[id].status = THINK;
-	printf("%5lldms Philosopher %2d is thinking\n", get_timegap(philo->start), id + 1);
+	print_status(philo, id, "is thinking");
 	return (0);
 }
 
@@ -76,7 +76,7 @@ void	*thread_func(t_philo *philo)
 	int	id;
 
 	id = philo->idx;
-	printf("쓰레드 생성: %d\n", id);
+	// printf("쓰레드 생성: %d\n", id);
 	gettimeofday(&philo->parr[id].fin_eat, NULL);
 	id = philo->idx;
 	while (philo->death == 0)
@@ -88,6 +88,6 @@ void	*thread_func(t_philo *philo)
 		if (thinking(philo, id))
 			break;
 	}
-	printf("쓰레드 %d 죽음\n", id);
+	// printf("쓰레드 %d 죽음\n", id);
 	return (0);
 }
