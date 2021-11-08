@@ -49,14 +49,13 @@ static int	eating(t_philo *philo, int id)
 		if (grab_fork(philo, id, left, LEFT) || grab_fork(philo, id, left, RIGHT))
 			return (1);
 	}
-	gettimeofday(&philo->parr[id].fin_eat, NULL);
-	printf("시간확인 %d 먹은시간 %lld\n", id, get_timegap(philo->start, philo->parr[id].fin_eat));
 	philo->parr[id].status = EAT;
 	print_status(philo, id, "is eating");
 	ft_usleep(philo->in.tteat);
+	gettimeofday(&philo->parr[id].fin_eat, NULL); // 마지막으로 먹은 시점 p에 기록
+	printf("시간확인 %d 먹은시간 %lld - status: %c\n", id+1, get_timegap(philo->start, philo->parr[id].fin_eat), philo->parr[id].status);
 	pthread_mutex_unlock(&philo->forks[id]);
 	pthread_mutex_unlock(&philo->forks[left]);
-	gettimeofday(&philo->parr[id].fin_eat, NULL); // 마지막으로 먹은 시점 p에 기록
 	return (0);
 }
 

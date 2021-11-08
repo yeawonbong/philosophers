@@ -44,7 +44,7 @@ int	starve(t_philo *philo, int id)
 		&& get_timegap(philo->parr[id].fin_eat, end) >= philo->in.ttdie \
 		&& death_detector(philo) == 0)
 	{
-		printf("status_print: %c\n", philo->parr[id].status);
+		printf("철학자 %d status_print: %c\n", id+1, philo->parr[id].status);
 		pthread_mutex_lock(&philo->print_lock);
 		if (death_detector(philo) == 0)
 			printf("%5lldms Philosopher %2d died\n", get_timegap(philo->start, end), id + 1);
