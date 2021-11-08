@@ -88,6 +88,7 @@ int	init_pthread(t_philo *philo)
 		if ((pthread_create(&philo->parr[philo->idx].t, NULL, (void*)thread_func, philo) != 0)\
 		 || (pthread_create(&philo->parr[philo->idx].m, NULL, (void*)monitor, philo) != 0))
 			return (1);
+		pthread_mutex_init(&philo->parr[philo->idx].eating, NULL);
 		usleep(100);
 		philo->idx++;//ㅇㅕ기 확인
 	}

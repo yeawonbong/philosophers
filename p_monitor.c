@@ -18,6 +18,8 @@ void	unlock_forks(t_philo *philo)
 	{
 		pthread_mutex_unlock(&philo->forks[i]);
 		pthread_mutex_destroy(&philo->forks[i++]);
+		// pthread_mutex_unlock(&philo->parr[i].eating);
+		// pthread_mutex_destroy(&philo->parr[i].eating);
 	}
 }
 
@@ -35,42 +37,38 @@ int	death_detector(t_philo *philo)
 	return (0);
 }
 
-int	starve(t_philo *philo, int id)
+static int	starve(t_philo *philo, int id, struct timeval end)
 {
-	struct		timeval end;
-
-	gettimeofday(&end, NULL);
-	if (philo->parr[id].status != EAT \
-		&& get_timegap(philo->parr[id].fin_eat, end) >= philo->in.ttdie \
-		&& death_detector(philo) == 0)
+	pthread_mutex_lock(&philo->parr[id].eating);
+	pthread_mutex_unlock(&philo->parr[id].eating);
+	if (get_timegap(philo->parr[id].fin_eat, end) >= philo->in.ttdie)
 	{
-		printf("철학자 %d status_print: %c\n", id+1, philo->parr[id].status);
 		pthread_mutex_lock(&philo->print_lock);
 		if (death_detector(philo) == 0)
 			printf("%5lldms Philosopher %2d died\n", get_timegap(philo->start, end), id + 1);
 		pthread_mutex_unlock(&philo->print_lock);
 		philo->death = 1;
 		pthread_mutex_unlock(&philo->death_lock);
-		unlock_forks(philo);
 		return (1);
 	}
-	if (death_detector(philo))
-		return (0);
 	return (0);
 }
 
 void	*monitor(t_philo *philo)///return type re
 {
 	int	id;
+	struct		timeval end;
 
 	id = philo->idx;
 	pthread_mutex_lock(&philo->m_lock);
 	pthread_mutex_unlock(&philo->m_lock);
 	while (death_detector(philo) == 0)
 	{
-		if (starve(philo, id))
+		gettimeofday(&end, NULL);
+		if (starve(philo, id, end))
 			break ;
 	}
+	unlock_forks(philo);
 	usleep(2500);
 	pthread_mutex_unlock(&philo->term);
 	return (0);
