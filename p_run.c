@@ -44,7 +44,7 @@ static int	init_philo(int argc, char *argv[], t_philo *philo)
 	|| ((philo->in.tteat = ft_atoi(argv[3])) < 0) \
 	|| ((philo->in.ttsleep = ft_atoi(argv[4])) < 0))
 		return (1);
-	printf("- pnum: %d\n- ttdie: %lld\n- tteat: %lld\n- ttsleep: %lld\n", philo->in.pnum, philo->in.ttdie, philo->in.tteat, philo->in.ttsleep);
+	// printf("- pnum: %d\n- ttdie: %lld\n- tteat: %lld\n- ttsleep: %lld\n", philo->in.pnum, philo->in.ttdie, philo->in.tteat, philo->in.ttsleep);
 	if (!(philo->parr = malloc(sizeof(t_p) * philo->in.pnum)))
 		return (1);
 	if (argc == 6)
@@ -83,11 +83,11 @@ static int	init_pthread(t_philo *philo)
 {
 	while (philo->idx < philo->in.pnum)
 	{
+		pthread_mutex_init(&philo->parr[philo->idx].eat_lock, NULL);
 		if ((pthread_create(&philo->parr[philo->idx].t, NULL, (void*)thread_func, philo) != 0)\
 		 || (pthread_create(&philo->parr[philo->idx].m, NULL, (void*)monitor, philo) != 0))
 			return (1);
-		pthread_mutex_init(&philo->parr[philo->idx].eating, NULL);
-		usleep(100);
+		ft_usleep(100);
 		philo->idx++;
 	}
 	pthread_mutex_unlock(&philo->m_lock);

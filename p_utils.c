@@ -48,3 +48,37 @@ int	ft_isdigit(int c)
 	else
 		return (0);
 }
+
+void	ft_putnbr_fd(int n, int fd)
+{
+	long long	nb;
+	char		c;
+
+	nb = (long long)n;
+	if (n < 0)
+	{
+		write(fd, "-", 1);
+		nb *= -1;
+	}
+	if (nb / 10)
+		ft_putnbr_fd((nb / 10), fd);
+	c = (nb % 10) + '0';
+	write(fd, &c, 1);
+}
+
+size_t	ft_strlen(const char *str)
+{
+	size_t	i;
+
+	i = 0;
+	while (str && str[i])
+		i++;
+	return (i);
+}
+
+void	ft_putstr_fd(char *s, int fd)
+{
+	if (!s)
+		return ;
+	write(fd, s, ft_strlen(s));
+}
