@@ -70,12 +70,10 @@ static int	init_mutex(t_philo *philo) //fork, idx_lock, terminator
 			return (1);
 		i++;
 	}
-	pthread_mutex_init(&philo->m_lock, NULL);
 	pthread_mutex_init(&philo->death_lock, NULL);
 	pthread_mutex_init(&philo->print_lock, NULL);
 	pthread_mutex_init(&philo->term, NULL);
 	pthread_mutex_lock(&philo->term);
-	pthread_mutex_lock(&philo->m_lock);
 	return (0);
 }
 
@@ -83,14 +81,12 @@ static int	init_pthread(t_philo *philo)
 {
 	while (philo->idx < philo->in.pnum)
 	{
-		pthread_mutex_init(&philo->parr[philo->idx].eat_lock, NULL);
 		if ((pthread_create(&philo->parr[philo->idx].t, NULL, (void*)thread_func, philo) != 0)\
 		 || (pthread_create(&philo->parr[philo->idx].m, NULL, (void*)monitor, philo) != 0))
 			return (1);
 		ft_usleep(100);
 		philo->idx++;
 	}
-	pthread_mutex_unlock(&philo->m_lock);
 	return (0);
 }
 

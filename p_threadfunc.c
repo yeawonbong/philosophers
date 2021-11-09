@@ -19,14 +19,14 @@ static int	grab_fork(t_philo *philo, int id, int left, char c)
 		pthread_mutex_lock(&philo->forks[id]);
 		if (term_detector(philo))
 			return (1);
-		print_status(philo, id, " has taken a fork on the right\n");
+		print_status(philo, id, "has taken a fork on the right");
 	}
 	else if (c == LEFT)
 	{
 		pthread_mutex_lock(&philo->forks[left]);
 		if (term_detector(philo))
 			return (1);
-		print_status(philo, id, " has taken a fork on the left\n");
+		print_status(philo, id, "has taken a fork on the left");
 	}
 	return (0);
 }
@@ -50,13 +50,11 @@ static int	eating(t_philo *philo, int id)
 			return (1);
 	}
 	philo->parr[id].last_eat = get_time_ms();
-	pthread_mutex_lock(&philo->parr[id].eat_lock);
-	print_status(philo, id, " is eating\n");
-	ft_usleep(philo->in.tteat);
 	philo->parr[id].ate++;
+	print_status(philo, id, "is eating");
+	ft_usleep(philo->in.tteat);
 	pthread_mutex_unlock(&philo->forks[id]);
 	pthread_mutex_unlock(&philo->forks[left]);
-	pthread_mutex_unlock(&philo->parr[id].eat_lock);
 	return (0);
 }
 
@@ -64,18 +62,21 @@ static int	sleeping(t_philo *philo, int id)
 {
 	if (term_detector(philo))
 		return (1);
-	print_status(philo, id, " is sleeping\n");
+	print_status(philo, id, "is sleeping");
 	ft_usleep(philo->in.ttsleep);
+	if (term_detector(philo))
+		return (1);
+	print_status(philo, id, "is thinking");
 	return (0);
 }
 
-static int	thinking(t_philo *philo, int id)
-{
-	if (term_detector(philo))
-		return (1);
-	print_status(philo, id, " is thinking\n");
-	return (0);
-}
+// static int	thinking(t_philo *philo, int id)
+// {
+// 	if (term_detector(philo))
+// 		return (1);
+// 	print_status(philo, id, "is thinking");
+// 	return (0);
+// }
 
 void	*thread_func(t_philo *philo)
 {
@@ -89,8 +90,8 @@ void	*thread_func(t_philo *philo)
 			break;
 		if (sleeping(philo, id))
 			break;
-		if (thinking(philo, id))
-			break;
+		// if (thinking(philo, id))
+		// 	break;
 	}
 	return (0);
 }

@@ -16,7 +16,6 @@ typedef struct s_p
 	pthread_t		m; //monitor
 	long long		last_eat;
 	int				ate;
-	pthread_mutex_t	eat_lock;
 }	t_p;
 
 typedef struct s_input
@@ -37,7 +36,6 @@ typedef struct s_philo
 	int				death;
 	int				ate_all;
 	pthread_mutex_t	*forks;
-	pthread_mutex_t m_lock;
 	pthread_mutex_t	death_lock;	
 	pthread_mutex_t	print_lock;
 	pthread_mutex_t	term;
