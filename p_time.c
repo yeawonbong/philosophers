@@ -12,26 +12,19 @@
 
 #include "philo.h"
 
-long long	get_time_ms(struct timeval time)
+long long	get_time_ms(void)
 {
-	return((time.tv_sec * 1000) + (time.tv_usec / 1000));
-}
+	struct timeval	time;
 
-long long	get_timegap(struct timeval start, struct timeval end)
-{	
-	return (get_time_ms(end) - get_time_ms(start));
+	gettimeofday(&time, NULL);
+	return((time.tv_sec * 1000) + (time.tv_usec / 1000));
 }
 
 void	ft_usleep(int time)
 {
-	struct timeval	tv;
 	long long		start;
 
-	gettimeofday(&tv, NULL);
-	start = get_time_ms(tv);
-	while (get_time_ms(tv) < (start + time))
-	{
+	start = get_time_ms();
+	while (get_time_ms() < (start + time))
 		usleep(100);
-		gettimeofday(&tv, NULL);
-	}
 }

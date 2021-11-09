@@ -15,7 +15,7 @@ typedef struct s_p
 	pthread_t		t;
 	pthread_t		m; //monitor
 	pthread_mutex_t	eating;
-	struct timeval	fin_eat;
+	long long		fin_eat;
 	int				ate;
 }	t_p;
 
@@ -30,7 +30,7 @@ typedef struct s_input
 
 typedef struct s_philo
 {
-	struct timeval	start;
+	long long		start;
 	t_input			in;
 	t_p				*parr;
 	pthread_mutex_t	*forks;
@@ -44,7 +44,7 @@ typedef struct s_philo
 }	t_philo;
 
 
-int		init(int argc, char *argv[], t_philo *philo);
+int		run(int argc, char *argv[], t_philo *philo);
 void	*thread_func(t_philo *philo);
 void	*monitor(t_philo *philo);
 
@@ -54,11 +54,11 @@ void	*monitor(t_philo *philo);
 /*
 **	p_time.c
 */
-long long	get_timegap(struct timeval start, struct timeval end);
+// long long	get_timegap(long long start, long long end);
 void		*monitor(t_philo *philo);
-int			death_detector(t_philo *philo);
+int			term_detector(t_philo *philo);
 void		ft_usleep(int time);
-long long	get_time_ms(struct timeval time);
+long long	get_time_ms(void);
 
 /*
 ** p_utils.c

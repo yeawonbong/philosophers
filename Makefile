@@ -2,7 +2,7 @@ NAME = philo
 BONUS_NAME = philo_bonus
 
 SRCS =./philo.c\
-./p_init.c\
+./p_run.c\
 ./p_monitor.c\
 ./p_threadfunc.c\
 ./p_time.c\

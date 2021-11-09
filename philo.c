@@ -14,12 +14,9 @@
 
 void	print_status(t_philo *philo, int id, char *str)
 {
-	struct timeval	end;
-
-	gettimeofday(&end, NULL);
 	pthread_mutex_lock(&philo->print_lock);
-	if (death_detector(philo) == 0)
-		printf("%5lldms Philosopher %2d %s\n", get_timegap(philo->start, end), id + 1, str);
+	if (term_detector(philo) == 0)
+		printf("%5lldms Philosopher %2d %s\n", get_time_ms() - philo->start, id + 1, str);
 	pthread_mutex_unlock(&philo->print_lock);
 }
 
@@ -66,7 +63,7 @@ int		main(int argc, char *argv[])
 	int			status;
 
 	status = 0;
-	if (init(argc, argv, &philo))
+	if (run(argc, argv, &philo))
 		return (0);
 	pthread_mutex_lock(&philo.term);
 	pthread_mutex_unlock(&philo.term);

@@ -1,11 +1,11 @@
 # include "philo.h"
 
-int	death_detector(t_philo *philo)
+int	term_detector(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->death_lock);
 	// if (philo->death)
 	// 	printf("DEATH DETECTION : %d\n", philo->death);
-	if (philo->death == 1 || philo->ate_all > philo->in.eatnum)
+	if (philo->death == 1 || philo->in.eatnum < philo->ate_all)
 	{
 		pthread_mutex_unlock(&philo->death_lock);
 		return (1);
@@ -27,15 +27,15 @@ static int full(t_philo *philo, int id)
 	return (0);
 }
 
-static int	starve(t_philo *philo, int id, struct timeval end)
+static int	starve(t_philo *philo, int id, long long end)
 {
 	pthread_mutex_lock(&philo->parr[id].eating);
 	pthread_mutex_unlock(&philo->parr[id].eating);
-	if (get_timegap(philo->parr[id].fin_eat, end) >= philo->in.ttdie)
+	if (end - philo->parr[id].fin_eat >= philo->in.ttdie)
 	{
 		pthread_mutex_lock(&philo->print_lock);
-		if (death_detector(philo) == 0)
-			printf("%5lldms Philosopher %2d died\n", get_timegap(philo->start, end), id + 1);
+		if (term_detector(philo) == 0)
+			printf("%5lldms Philosopher %2d died\n", end - philo->start, id + 1);
 		pthread_mutex_unlock(&philo->print_lock);
 		philo->death = 1;
 		pthread_mutex_unlock(&philo->death_lock);
@@ -46,15 +46,15 @@ static int	starve(t_philo *philo, int id, struct timeval end)
 
 void	*monitor(t_philo *philo)///return type re
 {
-	int	id;
-	struct		timeval end;
+	int			id;
+	long long	end;
 
 	id = philo->idx;
 	pthread_mutex_lock(&philo->m_lock);
 	pthread_mutex_unlock(&philo->m_lock);
-	while (death_detector(philo) == 0)
+	while (term_detector(philo) == 0)
 	{
-		gettimeofday(&end, NULL);
+		end = get_time_ms();
 		if (starve(philo, id, end))
 			break ;
 		if (0 < philo->in.eatnum && full(philo, id))
