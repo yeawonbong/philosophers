@@ -41,9 +41,7 @@ static int	eating(t_philo *philo, int id, int left)
 		if (grab_fork(philo, id, RIGHT) || grab_fork(philo, id, left))
 			return (1);
 	}
-	pthread_mutex_lock(&philo->term_lock);
 	philo->parr[id].last_eat = get_time_ms();
-	pthread_mutex_unlock(&philo->term_lock);
 	if (print_status(philo, id, "is eating"))
 		return (1);
 	ft_usleep(philo->in.tteat);
@@ -77,7 +75,9 @@ void	*thread_func(t_philo *philo)
 	pthread_mutex_unlock(&philo->m_lock[id]);
 	while (philo->death == 0)
 	{
-		if (eating(philo, id, left) || sleeping(philo, id))
+		if (term_detector(philo) || eating(philo, id, left))
+			break;
+		if (term_detector(philo) || sleeping(philo, id))
 			break;
 		// if (sleeping(philo, id))
 		// 	break;

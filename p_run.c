@@ -75,7 +75,6 @@ static int	init_mutex(t_philo *philo) //fork, idx_lock, terminator
 		pthread_mutex_lock(&philo->m_lock[i]);
 		i++;
 	}
-	pthread_mutex_init(&philo->term_lock, NULL);
 	pthread_mutex_init(&philo->print_lock, NULL);
 	pthread_mutex_init(&philo->exit, NULL);
 	pthread_mutex_lock(&philo->exit);

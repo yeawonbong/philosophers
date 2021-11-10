@@ -36,7 +36,6 @@ typedef struct s_philo
 	int				ate_all;
 	pthread_mutex_t	*forks;
 	pthread_mutex_t *m_lock;
-	pthread_mutex_t	term_lock;
 	pthread_mutex_t	print_lock;
 	pthread_mutex_t	exit;
 }	t_philo;

@@ -18,7 +18,6 @@ static int full(t_philo *philo, int id)
 		philo->ate_all++;
 	if (philo->ate_all == philo->in.eatnum)
 	{
-		pthread_mutex_lock(&philo->term_lock);
 		philo->ate_all++;
 		pthread_mutex_lock(&philo->print_lock);
 		ft_putstr_fd("Philosophers finished dinning!\n", STDOUT_FILENO);
@@ -32,10 +31,8 @@ static int	starve(t_philo *philo, int id)
 {
 	if ((get_time_ms() - philo->parr[id].last_eat) > philo->in.ttdie * 1000)
 	{
-		// printf("%5lld ms Philosopher %2d died\n", get_time_ms() - philo->start, id + 1);
 		if (term_detector(philo))
 			return (1);
-		pthread_mutex_lock(&philo->term_lock);
 		philo->death = 1;
 		pthread_mutex_lock(&philo->print_lock);
 		printf("%lld ms Philosopher %d died", (get_time_ms() - philo->start) / 1000, id + 1);
