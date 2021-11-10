@@ -12,20 +12,20 @@
 
 #include "philo.h"
 
-void	print_status(t_philo *philo, int id, char *str)
+int	print_status(t_philo *philo, int id, char *str)
 {
+	if (term_detector(philo))
+		return (1);
 	pthread_mutex_lock(&philo->print_lock);
-	if (term_detector(philo) == 0)
-	{
-		printf("%5lld ms Philosopher %2d %s\n", get_time_ms() - philo->start, id + 1, str);
-		// ft_putnbr_fd(get_time_ms() - philo->start, STDOUT_FILENO);
-		// ft_putstr_fd(" ms Philosopher ", STDOUT_FILENO);
-		// ft_putnbr_fd(id + 1, STDOUT_FILENO);
-		// ft_putstr_fd(" ", STDOUT_FILENO);
-		// ft_putstr_fd(str, STDOUT_FILENO);
-		// ft_putstr_fd("\n", STDOUT_FILENO);
-	}
+	// printf("%lld ms Philosopher %d %s\n", get_time_ms() - philo->start, id + 1, str);
+		ft_putnbr_fd(get_time_ms() - philo->start, STDOUT_FILENO);
+		ft_putstr_fd(" ms Philosopher ", STDOUT_FILENO);
+		ft_putnbr_fd(id + 1, STDOUT_FILENO);
+		ft_putstr_fd(" ", STDOUT_FILENO);
+		ft_putstr_fd(str, STDOUT_FILENO);
+		ft_putstr_fd("\n", STDOUT_FILENO);
 	pthread_mutex_unlock(&philo->print_lock);
+	return (0);
 }
 
 static void	free_mutex(t_philo *philo)
@@ -36,14 +36,17 @@ static void	free_mutex(t_philo *philo)
 	while (i < philo->in.pnum)
 	{
 		pthread_mutex_unlock(&philo->forks[i]);
-		pthread_mutex_destroy(&philo->forks[i++]);
+		pthread_mutex_destroy(&philo->forks[i]);
+		pthread_mutex_unlock(&philo->m_lock[i]);
+		pthread_mutex_destroy(&philo->m_lock[i]);
+		i++;
 	}
-	pthread_mutex_unlock(&philo->death_lock);
-	pthread_mutex_destroy(&philo->death_lock);
+	pthread_mutex_unlock(&philo->term_lock);
+	pthread_mutex_destroy(&philo->term_lock);
 	pthread_mutex_unlock(&philo->print_lock);
 	pthread_mutex_destroy(&philo->print_lock);
-	pthread_mutex_unlock(&philo->term);
-	pthread_mutex_destroy(&philo->term);
+	pthread_mutex_unlock(&philo->exit);
+	pthread_mutex_destroy(&philo->exit);
 }
 
 static void	free_thread(t_philo *philo)
@@ -75,8 +78,7 @@ int		main(int argc, char *argv[])
 	status = 0;
 	if (run(argc, argv, &philo))
 		return (0);
-	pthread_mutex_lock(&philo.term);
-	pthread_mutex_unlock(&philo.term);
+	pthread_mutex_lock(&philo.exit);
 	free_mutex(&philo);
 	free_thread(&philo);
 	return(0);

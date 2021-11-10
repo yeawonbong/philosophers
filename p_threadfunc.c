@@ -17,28 +17,20 @@ static int	grab_fork(t_philo *philo, int id, int left, char c)
 	if (c == RIGHT)
 	{
 		pthread_mutex_lock(&philo->forks[id]);
-		if (term_detector(philo))
+		if (print_status(philo, id, "has taken a fork on the right"))
 			return (1);
-		print_status(philo, id, "has taken a fork on the right");
 	}
 	else if (c == LEFT)
 	{
 		pthread_mutex_lock(&philo->forks[left]);
-		if (term_detector(philo))
+		if (print_status(philo, id, "has taken a fork on the left"))
 			return (1);
-		print_status(philo, id, "has taken a fork on the left");
 	}
 	return (0);
 }
 
-static int	eating(t_philo *philo, int id)
+static int	eating(t_philo *philo, int id, int left)
 {
-	int left;
-
-	if (id == philo->in.pnum - 1)
-		left = 0;
-	else
-		left = id + 1;
 	if (id % 2 == 1)
 	{
 		if (grab_fork(philo, id, left, RIGHT) || grab_fork(philo, id, left, LEFT))
@@ -50,9 +42,10 @@ static int	eating(t_philo *philo, int id)
 			return (1);
 	}
 	philo->parr[id].last_eat = get_time_ms();
-	philo->parr[id].ate++;
-	print_status(philo, id, "is eating");
+	if (print_status(philo, id, "is eating"))
+		return (1);
 	ft_usleep(philo->in.tteat);
+	philo->parr[id].ate++;
 	pthread_mutex_unlock(&philo->forks[id]);
 	pthread_mutex_unlock(&philo->forks[left]);
 	return (0);
@@ -60,38 +53,32 @@ static int	eating(t_philo *philo, int id)
 
 static int	sleeping(t_philo *philo, int id)
 {
-	if (term_detector(philo))
+	if (print_status(philo, id, "is sleeping"))
 		return (1);
-	print_status(philo, id, "is sleeping");
 	ft_usleep(philo->in.ttsleep);
-	if (term_detector(philo))
-		return (1);
-	print_status(philo, id, "is thinking");
 	return (0);
 }
-
-// static int	thinking(t_philo *philo, int id)
-// {
-// 	if (term_detector(philo))
-// 		return (1);
-// 	print_status(philo, id, "is thinking");
-// 	return (0);
-// }
 
 void	*thread_func(t_philo *philo)
 {
 	int	id;
+	int left;
 
 	id = philo->idx;
+	if (id == philo->in.pnum - 1)
+		left = 0;
+	else
+		left = id + 1;
 	philo->parr[id].last_eat = get_time_ms();
+	pthread_mutex_unlock(&philo->m_lock[id]);
 	while (philo->death == 0)
 	{
-		if (eating(philo, id))
+		if (eating(philo, id, left))
 			break;
 		if (sleeping(philo, id))
 			break;
-		// if (thinking(philo, id))
-		// 	break;
+		if (print_status(philo, id, "is thinking"))
+			break;
 	}
 	return (0);
 }

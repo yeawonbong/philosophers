@@ -52,6 +52,8 @@ static int	init_philo(int argc, char *argv[], t_philo *philo)
 		if ((philo->in.eatnum = ft_atoi(argv[5])) < 1)
 			return (1);
 	}
+	else
+		philo->in.eatnum = 0;
 	philo->death = 0;
 	philo->ate_all = 0;
 	return (0);
@@ -61,19 +63,22 @@ static int	init_mutex(t_philo *philo) //fork, idx_lock, terminator
 {
 	int	i;
 
-	if (!(philo->forks = malloc(sizeof(pthread_mutex_t) * philo->in.pnum)))
+	if (!(philo->forks = malloc(sizeof(pthread_mutex_t) * philo->in.pnum)) \
+	|| !(philo->m_lock = malloc(sizeof(pthread_mutex_t) * philo->in.pnum)))
 		return (1);
 	i = 0;
 	while (i < philo->in.pnum)
 	{
-		if (0 < pthread_mutex_init(&philo->forks[i], NULL))
+		if (0 < pthread_mutex_init(&philo->forks[i], NULL)\
+		 || 0 < pthread_mutex_init(&philo->m_lock[i], NULL))
 			return (1);
+		pthread_mutex_lock(&philo->m_lock[i]);
 		i++;
 	}
-	pthread_mutex_init(&philo->death_lock, NULL);
+	pthread_mutex_init(&philo->term_lock, NULL);
 	pthread_mutex_init(&philo->print_lock, NULL);
-	pthread_mutex_init(&philo->term, NULL);
-	pthread_mutex_lock(&philo->term);
+	pthread_mutex_init(&philo->exit, NULL);
+	pthread_mutex_lock(&philo->exit);
 	return (0);
 }
 
@@ -84,7 +89,7 @@ static int	init_pthread(t_philo *philo)
 		if ((pthread_create(&philo->parr[philo->idx].t, NULL, (void*)thread_func, philo) != 0)\
 		 || (pthread_create(&philo->parr[philo->idx].m, NULL, (void*)monitor, philo) != 0))
 			return (1);
-		ft_usleep(100);
+		usleep(100);
 		philo->idx++;
 	}
 	return (0);

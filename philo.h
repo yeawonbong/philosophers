@@ -36,17 +36,17 @@ typedef struct s_philo
 	int				death;
 	int				ate_all;
 	pthread_mutex_t	*forks;
-	pthread_mutex_t	death_lock;	
+	pthread_mutex_t *m_lock;
+	pthread_mutex_t	term_lock;
 	pthread_mutex_t	print_lock;
-	pthread_mutex_t	term;
+	pthread_mutex_t	exit;
 }	t_philo;
-
 
 int		run(int argc, char *argv[], t_philo *philo);
 void	*thread_func(t_philo *philo);
 void	*monitor(t_philo *philo);
 int		term_detector(t_philo *philo);
-void	print_status(t_philo *philo, int id, char *str);
+int		print_status(t_philo *philo, int id, char *str);
 
 /*
 **	p_time.c
