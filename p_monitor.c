@@ -2,14 +2,11 @@
 
 int	term_detector(t_philo *philo)
 {
-	pthread_mutex_lock(&philo->term_lock);
 	if (philo->death == 1 || \
 	(0 < philo->in.eatnum && philo->in.eatnum < philo->ate_all))
 	{
-		pthread_mutex_unlock(&philo->term_lock);
 		return (1);
 	}
-	pthread_mutex_unlock(&philo->term_lock);
 	return (0);
 }
 
@@ -17,18 +14,17 @@ static int full(t_philo *philo, int id)
 {
 	if (term_detector(philo))
 		return (1);
-	pthread_mutex_lock(&philo->term_lock);
 	if (philo->parr[id].ate == philo->in.eatnum)
 		philo->ate_all++;
 	if (philo->ate_all == philo->in.eatnum)
 	{
+		pthread_mutex_lock(&philo->term_lock);
 		philo->ate_all++;
 		pthread_mutex_lock(&philo->print_lock);
 		ft_putstr_fd("Philosophers finished dinning!\n", STDOUT_FILENO);
 		pthread_mutex_unlock(&philo->exit);
 		return (1);
 	}
-	pthread_mutex_unlock(&philo->term_lock);
 	return (0);
 }
 
@@ -41,7 +37,6 @@ static int	starve(t_philo *philo, int id)
 			return (1);
 		pthread_mutex_lock(&philo->term_lock);
 		philo->death = 1;
-		pthread_mutex_unlock(&philo->term_lock);
 		pthread_mutex_lock(&philo->print_lock);
 		printf("%lld ms Philosopher %d died", (get_time_ms() - philo->start) / 1000, id + 1);
 		pthread_mutex_unlock(&philo->exit);
