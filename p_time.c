@@ -17,7 +17,8 @@ long long	get_time_ms(void)
 	struct timeval	time;
 
 	gettimeofday(&time, NULL);
-	return((time.tv_sec * 1000) + (time.tv_usec / 1000));
+	// return((time.tv_sec * 1000) + (time.tv_usec / 1000));
+	return((time.tv_sec * 1000000) + (time.tv_usec));
 }
 
 void	ft_usleep(int time)
@@ -26,5 +27,5 @@ void	ft_usleep(int time)
 
 	// usleep(time * 1000);
 	start = get_time_ms();
-	while (get_time_ms() < (start + time)){}
+	while (get_time_ms() < (start + time * 1000)){}
 }

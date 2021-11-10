@@ -7,8 +7,7 @@
 # include <stdlib.h>
 # include <unistd.h>
 
-# define LEFT 'L'
-# define RIGHT 'R'
+# define RIGHT -1
 
 typedef struct s_p
 {

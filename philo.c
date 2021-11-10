@@ -18,7 +18,7 @@ int	print_status(t_philo *philo, int id, char *str)
 		return (1);
 	pthread_mutex_lock(&philo->print_lock);
 	// printf("%lld ms Philosopher %d %s\n", get_time_ms() - philo->start, id + 1, str);
-		ft_putnbr_fd(get_time_ms() - philo->start, STDOUT_FILENO);
+		ft_putnbr_fd((get_time_ms() - philo->start) / 1000 , STDOUT_FILENO);
 		ft_putstr_fd(" ms Philosopher ", STDOUT_FILENO);
 		ft_putnbr_fd(id + 1, STDOUT_FILENO);
 		ft_putstr_fd(" ", STDOUT_FILENO);
@@ -57,13 +57,13 @@ static void	free_thread(t_philo *philo)
 	i = 0;
 	while (i < philo->in.pnum)
 	{
-		pthread_join(philo->parr[i].t, NULL);
+		pthread_join(philo->parr[i].m, NULL);
 		i++;
 	}
 	i = 0;
 	while (i < philo->in.pnum)
 	{
-		pthread_join(philo->parr[i].m, NULL);
+		pthread_join(philo->parr[i].t, NULL);
 		i++;
 	}
 	free(philo->parr);
@@ -79,6 +79,7 @@ int		main(int argc, char *argv[])
 	if (run(argc, argv, &philo))
 		return (0);
 	pthread_mutex_lock(&philo.exit);
+	usleep(2500);
 	free_mutex(&philo);
 	free_thread(&philo);
 	return(0);
