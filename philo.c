@@ -14,9 +14,9 @@
 
 int	print_status(t_philo *philo, int id, char *str)
 {
-	if (term_detector(philo))
-		return (1);
 	pthread_mutex_lock(&philo->print_lock);
+	if (term_detector(philo, id))
+		return (1);
 	// printf("%lld ms Philosopher %d %s\n", get_time_ms() - philo->start, id + 1, str);
 		ft_putnbr_fd((get_time_ms() - philo->start) / 1000 , STDOUT_FILENO);
 		ft_putstr_fd(" ms Philosopher ", STDOUT_FILENO);
@@ -77,7 +77,10 @@ int		main(int argc, char *argv[])
 		return (0);
 	pthread_mutex_lock(&philo.exit);
 	usleep(250);
+	write(1, "fin\n", 4);
 	free_mutex(&philo);
+	write(1, "fin\n", 4);
 	free_thread(&philo);
+	write(1, "fin\n", 4);
 	return(0);
 }

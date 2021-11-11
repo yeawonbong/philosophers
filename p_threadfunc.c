@@ -75,9 +75,9 @@ void	*thread_func(t_philo *philo)
 	pthread_mutex_unlock(&philo->m_lock[id]);
 	while (philo->death == 0)
 	{
-		if (term_detector(philo) || eating(philo, id, left))
+		if (term_detector(philo, id) || eating(philo, id, left))
 			break;
-		if (term_detector(philo) || sleeping(philo, id))
+		if (term_detector(philo, id) || sleeping(philo, id))
 			break;
 		// if (sleeping(philo, id))
 		// 	break;
