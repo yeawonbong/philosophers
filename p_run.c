@@ -53,7 +53,7 @@ static int	init_philo(int argc, char *argv[], t_philo *philo)
 			return (1);
 	}
 	else
-		philo->in.eatnum = 0;
+		philo->in.eatnum = -1;
 	philo->death = 0;
 	philo->ate_all = 0;
 	return (0);
@@ -88,6 +88,8 @@ static int	init_pthread(t_philo *philo)
 		if ((pthread_create(&philo->parr[philo->idx].t, NULL, (void*)thread_func, philo) != 0)\
 		 || (pthread_create(&philo->parr[philo->idx].m, NULL, (void*)monitor, philo) != 0))
 			return (1);
+		pthread_detach(philo->parr[philo->idx].t);
+		pthread_detach(philo->parr[philo->idx].m);
 		usleep(100);
 		philo->idx++;
 	}

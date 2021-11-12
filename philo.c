@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "philo.h"
+static void	free_thread(t_philo *philo);
 
 int	print_status(t_philo *philo, int id, char *str)
 {
@@ -42,8 +43,28 @@ static void	free_mutex(t_philo *philo)
 		i++;
 	}
 	pthread_mutex_unlock(&philo->print_lock);
+	pthread_mutex_unlock(&philo->exit);
 	pthread_mutex_destroy(&philo->print_lock);
 	pthread_mutex_destroy(&philo->exit);
+
+	// while (i < philo->in.pnum)
+	// {
+	// 	pthread_mutex_unlock(&philo->forks[i]);
+	// 	pthread_mutex_unlock(&philo->m_lock[i]);
+	// 	i++;
+	// }
+	// pthread_mutex_unlock(&philo->print_lock);
+	// pthread_mutex_unlock(&philo->exit);
+	// free_thread(philo);
+	// i = 0;
+	// while (i < philo->in.pnum)
+	// {
+	// 	pthread_mutex_destroy(&philo->m_lock[i]);
+	// 	pthread_mutex_destroy(&philo->forks[i]);
+	// 	i++;
+	// }
+	// pthread_mutex_destroy(&philo->print_lock);
+	// pthread_mutex_destroy(&philo->exit);
 }
 
 static void	free_thread(t_philo *philo)
@@ -80,7 +101,7 @@ int		main(int argc, char *argv[])
 	write(1, "fin\n", 4);
 	free_mutex(&philo);
 	write(1, "fin\n", 4);
-	free_thread(&philo);
+	// free_thread(&philo);
 	write(1, "fin\n", 4);
 	return(0);
 }
