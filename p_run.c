@@ -63,16 +63,13 @@ static int	init_mutex(t_philo *philo) //fork, idx_lock, terminator
 {
 	int	i;
 
-	if (!(philo->forks = malloc(sizeof(pthread_mutex_t) * philo->in.pnum)) \
-	|| !(philo->m_lock = malloc(sizeof(pthread_mutex_t) * philo->in.pnum)))
+	if (!(philo->forks = malloc(sizeof(pthread_mutex_t) * philo->in.pnum)))
 		return (1);
 	i = 0;
 	while (i < philo->in.pnum)
 	{
-		if (0 < pthread_mutex_init(&philo->forks[i], NULL)\
-		 || 0 < pthread_mutex_init(&philo->m_lock[i], NULL))
+		if (0 < pthread_mutex_init(&philo->forks[i], NULL))
 			return (1);
-		pthread_mutex_lock(&philo->m_lock[i]);
 		i++;
 	}
 	pthread_mutex_init(&philo->print_lock, NULL);
@@ -85,11 +82,9 @@ static int	init_pthread(t_philo *philo)
 {
 	while (philo->idx < philo->in.pnum)
 	{
-		if ((pthread_create(&philo->parr[philo->idx].t, NULL, (void*)thread_func, philo) != 0)\
-		 || (pthread_create(&philo->parr[philo->idx].m, NULL, (void*)monitor, philo) != 0))
+		if ((pthread_create(&philo->parr[philo->idx].t, NULL, (void*)thread_func, philo) != 0))
 			return (1);
 		pthread_detach(philo->parr[philo->idx].t);
-		pthread_detach(philo->parr[philo->idx].m);
 		usleep(100);
 		philo->idx++;
 	}

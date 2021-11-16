@@ -31,18 +31,19 @@ typedef struct s_philo
 	long long		start;
 	t_input			in;
 	t_p				*parr;
+	pthread_t		starve;
+	pthread_t		full;
 	int				idx;
 	int				death;
 	int				ate_all;
 	pthread_mutex_t	*forks;
-	pthread_mutex_t *m_lock;
 	pthread_mutex_t	print_lock;
 	pthread_mutex_t	exit;
 }	t_philo;
 
 int		run(int argc, char *argv[], t_philo *philo);
 void	*thread_func(t_philo *philo);
-void	*monitor(t_philo *philo);
+void	monitor(t_philo *philo);
 int		term_detector(t_philo *philo, int id);
 int		print_status(t_philo *philo, int id, char *str);
 

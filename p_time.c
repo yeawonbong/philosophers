@@ -18,15 +18,16 @@ long long	get_time_ms(void)
 
 	gettimeofday(&time, NULL);
 	return((time.tv_sec * 1000) + (time.tv_usec / 1000));
-	// return((time.tv_sec * 1000000) + (time.tv_usec));
 }
 
 void	ft_usleep(int time)
 {
 	long long		start;
+	long long		end;
 
 	start = get_time_ms();
-	while (get_time_ms() < (start + time))
+	end = start + time;
+	while (get_time_ms() < end)
 	{
 		usleep(300);
 	}
