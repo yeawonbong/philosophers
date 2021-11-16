@@ -53,12 +53,3 @@ void	monitor(t_philo *philo)
 			id = 0;
 	}
 }
-
-void	mon_full(t_philo *philo)
-{
-	while (philo->death == 0)
-	{
-		if (0 < philo->in.eatnum && full(philo))
-			return ;
-	}
-}
