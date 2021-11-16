@@ -63,16 +63,13 @@ static int	init_mutex(t_philo *philo) //fork, idx_lock, terminator
 {
 	int	i;
 
-	if (!(philo->forks = malloc(sizeof(pthread_mutex_t) * philo->in.pnum)) \
-	|| !(philo->m_lock = malloc(sizeof(pthread_mutex_t) * philo->in.pnum)))
+	if (!(philo->forks = malloc(sizeof(pthread_mutex_t) * philo->in.pnum)))
 		return (1);
 	i = 0;
 	while (i < philo->in.pnum)
 	{
-		if (0 < pthread_mutex_init(&philo->forks[i], NULL)\
-		 || 0 < pthread_mutex_init(&philo->m_lock[i], NULL))
+		if (0 < pthread_mutex_init(&philo->forks[i], NULL))
 			return (1);
-		pthread_mutex_lock(&philo->m_lock[i]);
 		i++;
 	}
 	pthread_mutex_init(&philo->print_lock, NULL);

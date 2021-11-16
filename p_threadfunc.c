@@ -76,15 +76,12 @@ void	*thread_func(t_philo *philo)
 	else
 		left = id + 1;
 	philo->parr[id].last_eat = get_time_ms();
-	pthread_mutex_unlock(&philo->m_lock[id]);
 	while (1)//philo->death == 0)
 	{
 		if (eating(philo, id, left))
 			break;
 		if (sleeping(philo, id))
 			break;
-		// if (sleeping(philo, id))
-		// 	break;
 		// usleep(100);
 	}
 		// pthread_mutex_lock(&philo->print_lock);

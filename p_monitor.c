@@ -10,7 +10,7 @@ int	term_detector(t_philo *philo, int id)
 	return (0);
 }
 
-static int full(t_philo *philo, int id)
+static int full(t_philo *philo)
 {
 	if (philo->death == 0 && philo->ate_all == philo->in.pnum)
 	{
@@ -43,17 +43,22 @@ void	monitor(t_philo *philo)
 
 	id = 0;
 	
-	while (1)
+	while (philo->death == 0)
 	{
-		if (id == philo->idx)
-			id = 0;
 		if (starve(philo, id))
-			break ;
-		if (0 < philo->in.eatnum && full(philo, id))
-			break ;
-		id++;
+			return ;
+		if (0 < philo->in.eatnum && full(philo))
+			return ;
+		if (++id == philo->idx)
+			id = 0;
 	}
-		// pthread_mutex_lock(&philo->print_lock);
-		// printf("term!, monid: %d\n", id + 1);
-		// pthread_mutex_unlock(&philo->print_lock);
+}
+
+void	mon_full(t_philo *philo)
+{
+	while (philo->death == 0)
+	{
+		if (0 < philo->in.eatnum && full(philo))
+			return ;
+	}
 }

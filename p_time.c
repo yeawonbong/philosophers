@@ -23,9 +23,11 @@ long long	get_time_ms(void)
 void	ft_usleep(int time)
 {
 	long long		start;
+	long long		end;
 
 	start = get_time_ms();
-	while (get_time_ms() < (start + time))
+	end = start + time;
+	while (get_time_ms() < end)
 	{
 		usleep(300);
 	}
