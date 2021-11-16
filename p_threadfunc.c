@@ -17,13 +17,13 @@ static int	grab_fork(t_philo *philo, int id, int fork)
 	if (fork < 0)
 	{
 		pthread_mutex_lock(&philo->forks[id]);
-		if (print_status(philo, id, "has taken a fork on the right"))
+		if (print_status(philo, id, "has taken a fork"))
 			return (1);
 	}
 	else
 	{
 		pthread_mutex_lock(&philo->forks[fork]);
-		if (print_status(philo, id, "has taken a fork on the left"))
+		if (print_status(philo, id, "has taken a fork"))
 			return (1);
 	}
 	return (0);
