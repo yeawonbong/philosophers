@@ -47,7 +47,11 @@ static int	eating(t_philo *philo, int id, int left)
 	ft_usleep(philo->in.tteat);
 	pthread_mutex_unlock(&philo->forks[left]);
 	pthread_mutex_unlock(&philo->forks[id]);
-	philo->parr[id].ate++;
+	if (++philo->parr[id].ate == philo->in.eatnum)
+	{
+		philo->ate_all++;
+		return (1);
+	}
 	return (0);
 }
 
@@ -73,19 +77,18 @@ void	*thread_func(t_philo *philo)
 		left = id + 1;
 	philo->parr[id].last_eat = get_time_ms();
 	pthread_mutex_unlock(&philo->m_lock[id]);
-	while (term_detector(philo, id) == 0)//philo->death == 0)
+	while (1)//philo->death == 0)
 	{
-		if (term_detector(philo, id) == 0)
-			eating(philo, id, left);
-			// break;
-		if (term_detector(philo, id) == 0)
-			sleeping(philo, id);
-			// break;
+		if (eating(philo, id, left))
+			break;
+		if (sleeping(philo, id))
+			break;
 		// if (sleeping(philo, id))
 		// 	break;
+		// usleep(100);
 	}
-		pthread_mutex_lock(&philo->print_lock);
-		printf("term!, id: %d\n", id + 1);
-		pthread_mutex_unlock(&philo->print_lock);
+		// pthread_mutex_lock(&philo->print_lock);
+		// printf("term!, id: %d\n", id + 1);
+		// pthread_mutex_unlock(&philo->print_lock);
 	return (0);
 }

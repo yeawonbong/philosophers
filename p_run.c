@@ -85,11 +85,9 @@ static int	init_pthread(t_philo *philo)
 {
 	while (philo->idx < philo->in.pnum)
 	{
-		if ((pthread_create(&philo->parr[philo->idx].t, NULL, (void*)thread_func, philo) != 0)\
-		 || (pthread_create(&philo->parr[philo->idx].m, NULL, (void*)monitor, philo) != 0))
+		if ((pthread_create(&philo->parr[philo->idx].t, NULL, (void*)thread_func, philo) != 0))
 			return (1);
 		pthread_detach(philo->parr[philo->idx].t);
-		pthread_detach(philo->parr[philo->idx].m);
 		usleep(100);
 		philo->idx++;
 	}
