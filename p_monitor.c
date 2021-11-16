@@ -36,14 +36,14 @@ static int	starve(t_philo *philo, int id)
 {
 	if (term_detector(philo, id))
 		return(1);
-	if ((get_time_ms() - philo->parr[id].last_eat) > philo->in.ttdie * 1000)
+	if ((get_time_ms() - philo->parr[id].last_eat) > philo->in.ttdie)
 	{
 		if (term_detector(philo, id))
 			return (1);
 		pthread_mutex_lock(&philo->print_lock);
 		philo->death = 1;
 		usleep(2500);
-		printf("%lld ms Philosopher %d died", (get_time_ms() - philo->start) / 1000, id + 1);
+		printf("%lld ms Philosopher %d died", (get_time_ms() - philo->start), id + 1);
 		pthread_mutex_unlock(&philo->exit);
 		return (1);
 	}
@@ -65,8 +65,5 @@ void	*monitor(t_philo *philo)///return type re
 			full(philo, id);
 			// break ;
 	}
-		pthread_mutex_lock(&philo->print_lock);
-		printf("term!, monid: %d\n", id + 1);
-		pthread_mutex_unlock(&philo->print_lock);
 	return (0);
 }
