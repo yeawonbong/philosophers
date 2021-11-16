@@ -1,15 +1,5 @@
 # include "philo.h"
 
-int	term_detector(t_philo *philo, int id)
-{
-	if (philo->death == 1)
-		return (1);
-	if (0 < philo->in.eatnum \
-	 		&& philo->parr[id].ate == philo->in.eatnum)
-		return (1);
-	return (0);
-}
-
 static int full(t_philo *philo)
 {
 	if (philo->death == 0 && philo->ate_all == philo->in.pnum)
