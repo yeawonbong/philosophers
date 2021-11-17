@@ -43,8 +43,6 @@ typedef struct s_philo
 	long long		start;
 	t_input			in;
 	t_p				*parr;
-	pthread_t		starve;
-	pthread_t		full;
 	int				idx;
 	int				death;
 	int				ate_all;

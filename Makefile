@@ -1,5 +1,4 @@
 NAME = philo
-BONUS_NAME = philo_bonus
 
 SRCS =./philo.c\
 ./p_run.c\

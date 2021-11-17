@@ -18,6 +18,7 @@ static int	full(t_philo *philo)
 	{
 		pthread_mutex_lock(&philo->print_lock);
 		ft_putstr_fd("Philosophers finished dinning!\n", STDOUT_FILENO);
+		philo->death = 1;
 		usleep(2500);
 		pthread_mutex_unlock(&philo->exit);
 		return (1);
