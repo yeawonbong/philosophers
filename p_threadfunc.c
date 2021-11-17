@@ -68,7 +68,7 @@ static int	sleeping(t_philo *philo, int id)
 void	*thread_func(t_philo *philo)
 {
 	int	id;
-	int left;
+	int	left;
 
 	id = philo->idx;
 	if (id == philo->in.pnum - 1)
@@ -76,16 +76,12 @@ void	*thread_func(t_philo *philo)
 	else
 		left = id + 1;
 	philo->parr[id].last_eat = get_time_ms();
-	while (1)//philo->death == 0)
+	while (1)
 	{
 		if (eating(philo, id, left))
-			break;
+			break ;
 		if (sleeping(philo, id))
-			break;
-		// usleep(100);
+			break ;
 	}
-		// pthread_mutex_lock(&philo->print_lock);
-		// printf("term!, id: %d\n", id + 1);
-		// pthread_mutex_unlock(&philo->print_lock);
 	return (0);
 }

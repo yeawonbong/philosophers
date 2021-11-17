@@ -1,5 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ybong <ybong@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/11/17 17:13:50 by ybong             #+#    #+#             */
+/*   Updated: 2021/11/17 17:14:17 by ybong            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef PHILO_H
-#define PHILO_H
+# define PHILO_H
 
 # include <stdio.h>
 # include <sys/time.h>
@@ -12,7 +24,7 @@
 typedef struct s_p
 {
 	pthread_t		t;
-	pthread_t		m; //monitor
+	pthread_t		m;
 	long long		last_eat;
 	int				ate;
 }	t_p;
@@ -22,7 +34,7 @@ typedef struct s_input
 	int				pnum;
 	long long		ttdie;
 	long long		tteat;
-	long long		ttsleep; // in microsec
+	long long		ttsleep;
 	int				eatnum;
 }	t_input;
 
@@ -41,28 +53,26 @@ typedef struct s_philo
 	pthread_mutex_t	exit;
 }	t_philo;
 
-int		run(int argc, char *argv[], t_philo *philo);
-void	*thread_func(t_philo *philo);
-void	monitor(t_philo *philo);
-int		print_status(t_philo *philo, int id, char *str);
+/*
+**	philo
+*/
+int			run(int argc, char *argv[], t_philo *philo);
+void		*thread_func(t_philo *philo);
+void		monitor(t_philo *philo);
+int			print_status(t_philo *philo, int id, char *str);
 
 /*
-**	p_time.c
+**	time_functions
 */
-void		ft_usleep(int time);
 long long	get_time_ms(void);
+void		ft_usleep(int time);
 
 /*
-** p_utils.c
+**	utils
 */
-int		ft_atoi(const char *str);
-int		ft_isdigit(int c);
-void	ft_putnbr_fd(int n, int fd);
-void	ft_putstr_fd(char *s, int fd);
-
-
-
-
-
+int			ft_atoi(const char *str);
+int			ft_isdigit(int c);
+void		ft_putnbr_fd(int n, int fd);
+void		ft_putstr_fd(char *s, int fd);
 
 #endif

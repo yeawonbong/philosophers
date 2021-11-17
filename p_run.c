@@ -37,19 +37,22 @@ static int	isarg_digit(int argc, char *argv[])
 static int	init_philo(int argc, char *argv[], t_philo *philo)
 {
 	philo->idx = 0;
-	
-	if (isarg_digit(argc, argv) \
-	|| ((philo->in.pnum = ft_atoi(argv[1])) < 1) \
-	|| ((philo->in.ttdie = ft_atoi(argv[2])) < 0) \
-	|| ((philo->in.tteat = ft_atoi(argv[3])) < 0) \
-	|| ((philo->in.ttsleep = ft_atoi(argv[4])) < 0))
+	if (isarg_digit(argc, argv))
 		return (1);
-	// printf("- pnum: %d\n- ttdie: %lld\n- tteat: %lld\n- ttsleep: %lld\n", philo->in.pnum, philo->in.ttdie, philo->in.tteat, philo->in.ttsleep);
-	if (!(philo->parr = malloc(sizeof(t_p) * philo->in.pnum)))
+	philo->in.pnum = ft_atoi(argv[1]);
+	philo->in.ttdie = ft_atoi(argv[2]);
+	philo->in.tteat = ft_atoi(argv[3]);
+	philo->in.ttsleep = ft_atoi(argv[4]);
+	if (philo->in.pnum < 1 || philo->in.ttdie < 0 \
+	|| philo->in.tteat < 0 || philo->in.ttsleep < 0)
+		return (1);
+	philo->parr = malloc(sizeof(t_p) * philo->in.pnum);
+	if (!philo->parr)
 		return (1);
 	if (argc == 6)
 	{
-		if ((philo->in.eatnum = ft_atoi(argv[5])) < 1)
+		philo->in.eatnum = ft_atoi(argv[5]);
+		if (philo->in.eatnum < 1)
 			return (1);
 	}
 	else
@@ -59,11 +62,12 @@ static int	init_philo(int argc, char *argv[], t_philo *philo)
 	return (0);
 }
 
-static int	init_mutex(t_philo *philo) //fork, idx_lock, terminator
+static int	init_mutex(t_philo *philo)
 {
 	int	i;
 
-	if (!(philo->forks = malloc(sizeof(pthread_mutex_t) * philo->in.pnum)))
+	philo->forks = malloc(sizeof(pthread_mutex_t) * philo->in.pnum);
+	if (!philo->forks)
 		return (1);
 	i = 0;
 	while (i < philo->in.pnum)
@@ -82,7 +86,8 @@ static int	init_pthread(t_philo *philo)
 {
 	while (philo->idx < philo->in.pnum)
 	{
-		if ((pthread_create(&philo->parr[philo->idx].t, NULL, (void*)thread_func, philo) != 0))
+		if ((pthread_create(&philo->parr[philo->idx].t, NULL, \
+								(void *)thread_func, philo) != 0))
 			return (1);
 		pthread_detach(philo->parr[philo->idx].t);
 		usleep(100);
@@ -91,7 +96,7 @@ static int	init_pthread(t_philo *philo)
 	return (0);
 }
 
-int		run(int argc, char *argv[], t_philo *philo)
+int	run(int argc, char *argv[], t_philo *philo)
 {
 	int	i;
 
@@ -99,7 +104,7 @@ int		run(int argc, char *argv[], t_philo *philo)
 	philo->start = get_time_ms();
 	if (init_philo(argc, argv, philo))
 	{
-		printf("Err: invalid arguments\n");		
+		printf("Err: invalid arguments\n");
 		return (1);
 	}
 	if (init_mutex(philo))
