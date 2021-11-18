@@ -18,13 +18,19 @@ static int	grab_fork(t_philo *philo, int id, int fork)
 	{
 		pthread_mutex_lock(&philo->forks[id]);
 		if (print_status(philo, id, "has taken a fork"))
+		{
+			pthread_mutex_unlock(&philo->forks[id]);
 			return (1);
+		}
 	}
 	else
 	{
 		pthread_mutex_lock(&philo->forks[fork]);
 		if (print_status(philo, id, "has taken a fork"))
+		{
+			pthread_mutex_unlock(&philo->forks[fork]);
 			return (1);
+		}
 	}
 	return (0);
 }

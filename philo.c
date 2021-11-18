@@ -16,7 +16,9 @@ int	print_status(t_philo *philo, int id, char *str)
 {
 	pthread_mutex_lock(&philo->print_lock);
 	if (philo->death == 1)
+	{
 		return (1);
+	}
 	// printf("%lld ms Philosopher %d %s\n", get_time_ms() - philo->start, id + 1, str);
 	ft_putnbr_fd((get_time_ms() - philo->start), STDOUT_FILENO);
 	ft_putstr_fd(" ms Philosopher ", STDOUT_FILENO);
@@ -34,13 +36,14 @@ static void	free_all(t_philo *philo)
 	int	i;
 
 	i = 0;
+	pthread_mutex_unlock(&philo->print_lock);
+	usleep(2500);
 	while (i < philo->in.pnum)
 	{
 		pthread_mutex_unlock(&philo->forks[i]);
 		pthread_mutex_destroy(&philo->forks[i]);
 		i++;
 	}
-	// pthread_mutex_unlock(&philo->print_lock);
 	pthread_mutex_destroy(&philo->print_lock);
 	pthread_mutex_unlock(&philo->exit);
 	pthread_mutex_destroy(&philo->exit);
