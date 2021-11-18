@@ -42,6 +42,7 @@ static void	free_all(t_philo *philo)
 	}
 	pthread_mutex_unlock(&philo->print_lock);
 	pthread_mutex_destroy(&philo->print_lock);
+	pthread_mutex_unlock(&philo->exit);
 	pthread_mutex_destroy(&philo->exit);
 }
 
