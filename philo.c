@@ -40,8 +40,9 @@ static void	free_all(t_philo *philo)
 		pthread_mutex_destroy(&philo->forks[i]);
 		i++;
 	}
-	pthread_mutex_unlock(&philo->print_lock);
+	// pthread_mutex_unlock(&philo->print_lock);
 	pthread_mutex_destroy(&philo->print_lock);
+	pthread_mutex_unlock(&philo->exit);
 	pthread_mutex_destroy(&philo->exit);
 	i = 0;
 	while (i < philo->in.pnum)
@@ -49,6 +50,7 @@ static void	free_all(t_philo *philo)
 		pthread_join(philo->parr[i].t, NULL);
 		i++;
 	}
+	// sleep(2500);
 }
 
 int	main(int argc, char *argv[])
