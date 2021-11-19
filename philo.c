@@ -17,9 +17,8 @@ int	print_status(t_philo *philo, int id, char *str)
 	pthread_mutex_lock(&philo->print_lock);
 	if (philo->death == 1)
 		return (1);
-	// printf("%lld ms Philosopher %d %s\n", get_time_ms() - philo->start, id + 1, str);
 	ft_putnbr_fd((get_time_ms() - philo->start), STDOUT_FILENO);
-	ft_putstr_fd(" ms Philosopher ", STDOUT_FILENO);
+	ft_putstr_fd(" Philosopher ", STDOUT_FILENO);
 	ft_putnbr_fd(id + 1, STDOUT_FILENO);
 	ft_putstr_fd(" ", STDOUT_FILENO);
 	ft_putstr_fd(str, STDOUT_FILENO);
