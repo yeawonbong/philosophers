@@ -10,7 +10,7 @@ SRCS =./philo.c\
 OBJS = $(SRCS:.c=.o)
 
 CC = gcc
-CFLAGS = -g -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror
 
 all : $(NAME)
 

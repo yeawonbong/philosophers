@@ -50,7 +50,7 @@ static int	eating(t_philo *philo, int id, int left)
 	if (++philo->parr[id].ate == philo->in.eatnum)
 	{
 		philo->ate_all++;
-		return (1);
+		return (0);
 	}
 	return (0);
 }
