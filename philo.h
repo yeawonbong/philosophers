@@ -24,7 +24,6 @@
 typedef struct s_p
 {
 	pthread_t		t;
-	pthread_t		m;
 	long long		last_eat;
 	int				ate;
 }	t_p;
